@@ -1,0 +1,27 @@
+.items {
+  padding-bottom: 24px;
+  h3 {
+    line-height: 22px;
+    margin: 24px 24px 16px;
+  }
+}
+
+.content {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  padding: 0 24px;
+
+  button {
+    all: unset;
+    cursor: pointer;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 16px;
+    border-radius: 8px;
+    background-color: #d6d6d6;
+  }
+}

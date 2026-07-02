@@ -1,5 +1,16 @@
 import type { EditorSnapshot } from '@/types/shape';
-import type { PushHistory } from './index.types';
+import type { EditorStore, PushHistory } from './index.types';
+
+export const getFirstPosition = (
+  state: EditorStore,
+  width: number,
+  height: number,
+) => {
+  return {
+    x: state.settings.width / 2 - width / 2,
+    y: state.settings.height / 2 - height / 2,
+  };
+};
 
 export const moveShapeId = (
   shapeIds: string[],

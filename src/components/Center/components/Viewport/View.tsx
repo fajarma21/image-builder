@@ -19,6 +19,7 @@ import css from './View.module.scss';
 // TODO: resize and rotate multiselect support
 
 const Viewport = () => {
+  const camera = useEditorStore((state) => state.camera);
   const settings = useEditorStore((state) => state.settings);
   const shapesById = useEditorStore((state) => state.shapesById);
   const shapeIds = useEditorStore((state) => state.shapeIds);
@@ -149,8 +150,8 @@ const Viewport = () => {
         case DRAGGING: {
           for (const shape of interaction.startShapes) {
             updateShape(shape.id, {
-              x: shape.x + dx,
-              y: shape.y + dy,
+              x: shape.x + dx / camera.zoom,
+              y: shape.y + dy / camera.zoom,
             });
           }
           break;
@@ -160,8 +161,10 @@ const Viewport = () => {
           const shape = interaction.startShapes[0];
           const angle = (shape.rotation * Math.PI) / 180;
 
-          const localDx = (dx * Math.cos(angle) + dy * Math.sin(angle)) * 2;
-          const localDy = (-dx * Math.sin(angle) + dy * Math.cos(angle)) * 2;
+          const localDx =
+            (dx * Math.cos(angle) + dy * Math.sin(angle)) * (2 / camera.zoom);
+          const localDy =
+            (-dx * Math.sin(angle) + dy * Math.cos(angle)) * (2 / camera.zoom);
 
           const width = Math.max(20, shape.width + localDx);
           const height = Math.max(20, shape.height + localDy);
@@ -178,8 +181,8 @@ const Viewport = () => {
         case ROTATING: {
           if (!svgRef.current) break;
           const svgRect = svgRef.current.getBoundingClientRect();
-          const svgMouseX = Math.max(e.clientX - svgRect.left, 0);
-          const svgMouseY = Math.max(e.clientY - svgRect.top, 0);
+          const svgMouseX = Math.max(e.clientX - svgRect.left, 0) / camera.zoom;
+          const svgMouseY = Math.max(e.clientY - svgRect.top, 0) / camera.zoom;
 
           const angle = Math.atan2(
             svgMouseY - interaction.centerY,
@@ -198,7 +201,7 @@ const Viewport = () => {
           break;
       }
     },
-    [interaction, startInteraction, updateShape],
+    [camera.zoom, interaction, startInteraction, updateShape],
   );
 
   useEffect(() => {
@@ -222,35 +225,42 @@ const Viewport = () => {
       className={css.viewport}
       onMouseDown={handleClickOutside}
     >
-      {shapesById && (
-        <>
-          {shapeIds.map((id) => {
-            const item = shapesById[id];
-            return (
-              !!item && (
-                <ShapeRenderer
-                  key={id}
-                  shape={item}
-                  onMouseDown={(e) => handleMouseDownShape(e, id)}
-                />
-              )
-            );
-          })}
+      <g
+        transform={`
+          scale(${camera.zoom})
+          translate(${camera.offsetX}, ${camera.offsetY})
+          `}
+      >
+        {shapesById && (
+          <>
+            {shapeIds.map((id) => {
+              const item = shapesById[id];
+              return (
+                !!item && (
+                  <ShapeRenderer
+                    key={id}
+                    shape={item}
+                    onMouseDown={(e) => handleMouseDownShape(e, id)}
+                  />
+                )
+              );
+            })}
 
-          {!!selectedIds.length && <ShapeWrapper />}
+            {!!selectedIds.length && <ShapeWrapper />}
+          </>
+        )}
+      </g>
 
-          {/* HELPER */}
-          <rect
-            x={0}
-            y={0}
-            width={settings.width}
-            height={settings.height}
-            fill="none"
-            stroke="#d6dade"
-            data-export="exclude"
-          />
-        </>
-      )}
+      {/* HELPER */}
+      <rect
+        x={0}
+        y={0}
+        width={settings.width}
+        height={settings.height}
+        fill="none"
+        stroke="#d6dade"
+        data-export="exclude"
+      />
     </svg>
   );
 };

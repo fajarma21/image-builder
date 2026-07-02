@@ -5,11 +5,21 @@ import { EDITING_TEXT, IDLE, MOUSE_DOWN } from '@/constants/interaction';
 
 import { DEFAULT_GENERIC_SHAPE, DEFAULT_TEXT_SHAPE } from './index.constants';
 import type { EditorStore } from './index.types';
-import { createSnapshot, moveShapeId, pushHistory } from './index.helpers';
+import {
+  createSnapshot,
+  getFirstPosition,
+  moveShapeId,
+  pushHistory,
+} from './index.helpers';
 import isEmptyObject from '@/utils/isEmptyObject';
 import type { Shape } from '@/types/shape';
 
 const useEditorStore = create<EditorStore>((set) => ({
+  camera: {
+    offsetX: 0,
+    offsetY: 0,
+    zoom: 1,
+  },
   settings: {
     width: 800,
     height: 600,
@@ -26,6 +36,9 @@ const useEditorStore = create<EditorStore>((set) => ({
     set((state) => {
       const id = Date.now().toString();
       const len = state.shapeIds.length;
+      const defaultShape =
+        shape === SHAPE_TEXT ? DEFAULT_TEXT_SHAPE : DEFAULT_GENERIC_SHAPE;
+      const name = `${shape}${len ? ` ${len + 1}` : ''}`;
 
       return {
         ...pushHistory(state),
@@ -34,10 +47,9 @@ const useEditorStore = create<EditorStore>((set) => ({
           [id]: {
             id,
             type: shape,
-            name: `${shape}${len ? ` ${len + 1}` : ''}`,
-            ...(shape === SHAPE_TEXT
-              ? DEFAULT_TEXT_SHAPE
-              : DEFAULT_GENERIC_SHAPE),
+            name,
+            ...defaultShape,
+            ...getFirstPosition(state, defaultShape.width, defaultShape.height),
           },
         },
         shapeIds: [...state.shapeIds, id],
@@ -61,6 +73,7 @@ const useEditorStore = create<EditorStore>((set) => ({
             ...DEFAULT_GENERIC_SHAPE,
             width,
             height,
+            ...getFirstPosition(state, width, height),
           },
         },
         shapeIds: [...state.shapeIds, id],

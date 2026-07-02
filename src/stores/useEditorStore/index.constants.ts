@@ -1,6 +1,4 @@
 const DEFAULT_SHAPE = {
-  x: 0,
-  y: 0,
   fill: '#ffdd61',
   rotation: 0,
   stroke: 'none',

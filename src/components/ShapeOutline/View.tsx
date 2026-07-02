@@ -7,16 +7,21 @@ import {
   SHAPE_TEXT,
 } from '@/constants';
 import { COLOR_OUTLINE } from '@/constants/colors';
+import useEditorStore from '@/stores/useEditorStore';
 
 import css from './View.module.scss';
 import type { ShapeOutlineProps } from './View.types';
 
 const ShapeOutline = (props: ShapeOutlineProps) => {
   const { shape } = props;
-  const { x, y, fontSize, text } = shape;
+  const { x, y, fontSize, text, rotation, width, height } = shape;
+
+  const camera = useEditorStore((state) => state.camera);
+
   const outlineProps = {
     fill: 'none',
     stroke: COLOR_OUTLINE,
+    strokeWidth: 1 / camera.zoom,
   };
 
   const renderOutline = () => {
@@ -45,7 +50,11 @@ const ShapeOutline = (props: ShapeOutlineProps) => {
   };
 
   return (
-    <g data-outline className={css.outline}>
+    <g
+      data-outline
+      className={css.outline}
+      transform={`rotate(${rotation} ${x + width / 2} ${y + height / 2})`}
+    >
       {renderOutline()}
     </g>
   );

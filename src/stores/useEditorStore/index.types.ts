@@ -31,11 +31,19 @@ interface Settings {
   height: number;
 }
 
+interface Camera {
+  offsetX: number;
+  offsetY: number;
+  zoom: number;
+}
+
 export interface PushHistory extends EditorSnapshot {
   past: EditorStore['past'];
 }
 
 export interface EditorStore extends EditorSnapshot {
+  camera: Camera;
+
   settings: Settings;
 
   interaction:

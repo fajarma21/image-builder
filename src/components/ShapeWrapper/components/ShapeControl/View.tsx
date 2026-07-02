@@ -5,22 +5,33 @@ import useEditorStore from '@/stores/useEditorStore';
 import type { ShapeControlProps } from './View.types';
 
 const ShapeControl = ({ shape }: ShapeControlProps) => {
+  const camera = useEditorStore((state) => state.camera);
   const startInteraction = useEditorStore((state) => state.startInteraction);
 
   const { x, y, width, height } = shape;
   const centerX = x + width / 2;
   const centerY = y + height / 2;
 
+  const outlineProps = {
+    fill: 'none',
+    stroke: COLOR_OUTLINE,
+    strokeWidth: 1 / camera.zoom,
+  };
+
+  const resizeHandleSize = 8 / camera.zoom;
+  const rotateHandleSize = 6 / camera.zoom;
+  const rotateHandleOffset = 30 / camera.zoom;
+
   return (
     <>
       {/* RESIZE */}
       <rect
-        x={x + width - 4}
-        y={y + height - 4}
-        width={8}
-        height={8}
+        x={x + width - resizeHandleSize / 2}
+        y={y + height - resizeHandleSize / 2}
+        width={resizeHandleSize}
+        height={resizeHandleSize}
+        {...outlineProps}
         fill="white"
-        stroke={COLOR_OUTLINE}
         onMouseDown={(e) =>
           startInteraction(RESIZING, e.clientX, e.clientY, shape)
         }
@@ -31,15 +42,15 @@ const ShapeControl = ({ shape }: ShapeControlProps) => {
         x1={centerX}
         y1={y}
         x2={centerX}
-        y2={y - 30}
-        stroke={COLOR_OUTLINE}
+        y2={y - rotateHandleOffset}
+        {...outlineProps}
       />
       <circle
         cx={centerX}
-        cy={y - 30}
-        r={6}
+        cy={y - rotateHandleOffset}
+        r={rotateHandleSize}
+        {...outlineProps}
         fill="white"
-        stroke={COLOR_OUTLINE}
         onMouseDown={(e) =>
           startInteraction(ROTATING, e.clientX, e.clientY, shape)
         }
@@ -49,9 +60,9 @@ const ShapeControl = ({ shape }: ShapeControlProps) => {
       <circle
         cx={centerX}
         cy={centerY}
-        r={1}
+        r={1 / camera.zoom}
+        {...outlineProps}
         fill={COLOR_OUTLINE}
-        stroke={COLOR_OUTLINE}
       />
     </>
   );

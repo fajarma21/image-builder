@@ -4,7 +4,7 @@ import useEditorStore from '@/stores/useEditorStore';
 import css from './View.module.scss';
 
 const TopBar = () => {
-  const settings = useEditorStore((state) => state.settings);
+  const document = useEditorStore((state) => state.document);
   const shapeIds = useEditorStore((state) => state.shapeIds);
   const past = useEditorStore((state) => state.past);
   const future = useEditorStore((state) => state.future);
@@ -12,7 +12,7 @@ const TopBar = () => {
   const redo = useEditorStore((state) => state.redo);
 
   const handleExport = async () => {
-    exportToPng(settings.width, settings.height);
+    exportToPng(document.width, document.height);
   };
 
   return (

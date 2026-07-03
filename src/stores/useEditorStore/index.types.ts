@@ -26,15 +26,16 @@ interface GenericInteraction extends InteractionState {
   type: GenericInteractionTypes;
 }
 
-interface Settings {
-  width: number;
-  height: number;
-}
-
-interface Camera {
+export interface Camera {
   offsetX: number;
   offsetY: number;
   zoom: number;
+}
+
+interface Document {
+  width: number;
+  height: number;
+  backgroundColor: string;
 }
 
 export interface PushHistory extends EditorSnapshot {
@@ -44,7 +45,7 @@ export interface PushHistory extends EditorSnapshot {
 export interface EditorStore extends EditorSnapshot {
   camera: Camera;
 
-  settings: Settings;
+  document: Document;
 
   interaction:
     | IdleInteraction

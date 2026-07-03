@@ -17,10 +17,10 @@ import { ARROW_VALUES } from './View.constants';
 import css from './View.module.scss';
 
 // TODO: resize and rotate multiselect support
+// TODO: panning still not working properly, need to fix the offset calculation
 
 const Viewport = () => {
-  const camera = useEditorStore((state) => state.camera);
-  const settings = useEditorStore((state) => state.settings);
+  const document = useEditorStore((state) => state.document);
   const shapesById = useEditorStore((state) => state.shapesById);
   const shapeIds = useEditorStore((state) => state.shapeIds);
   const selectedIds = useEditorStore((state) => state.selectedIds);
@@ -42,11 +42,10 @@ const Viewport = () => {
   const paste = useEditorStore((state) => state.paste);
 
   const svgRef = useRef<SVGSVGElement>(null);
+  const spaceKey = useRef(false);
 
-  const handleClickOutside = (e: MouseEvent) => {
-    if (e.target === svgRef.current) {
-      clearSelection();
-    }
+  const handleMouseDownCanvas = (e: MouseEvent) => {
+    if (e.target === svgRef.current) clearSelection();
   };
 
   const handleMouseDownShape = (e: MouseEvent, id: string) => {
@@ -113,6 +112,8 @@ const Viewport = () => {
         e.preventDefault();
         clearSelection();
       }
+
+      if (e.key === ' ') spaceKey.current = true;
     },
     [
       clearSelection,
@@ -127,6 +128,10 @@ const Viewport = () => {
       undo,
     ],
   );
+
+  const handleKeyUp = useCallback((e: KeyboardEvent) => {
+    if (e.key === ' ') spaceKey.current = false;
+  }, []);
 
   const handleMouseMove = useCallback(
     (e: globalThis.MouseEvent) => {
@@ -150,8 +155,8 @@ const Viewport = () => {
         case DRAGGING: {
           for (const shape of interaction.startShapes) {
             updateShape(shape.id, {
-              x: shape.x + dx / camera.zoom,
-              y: shape.y + dy / camera.zoom,
+              x: shape.x + dx,
+              y: shape.y + dy,
             });
           }
           break;
@@ -161,10 +166,8 @@ const Viewport = () => {
           const shape = interaction.startShapes[0];
           const angle = (shape.rotation * Math.PI) / 180;
 
-          const localDx =
-            (dx * Math.cos(angle) + dy * Math.sin(angle)) * (2 / camera.zoom);
-          const localDy =
-            (-dx * Math.sin(angle) + dy * Math.cos(angle)) * (2 / camera.zoom);
+          const localDx = (dx * Math.cos(angle) + dy * Math.sin(angle)) * 2;
+          const localDy = (-dx * Math.sin(angle) + dy * Math.cos(angle)) * 2;
 
           const width = Math.max(20, shape.width + localDx);
           const height = Math.max(20, shape.height + localDy);
@@ -181,8 +184,8 @@ const Viewport = () => {
         case ROTATING: {
           if (!svgRef.current) break;
           const svgRect = svgRef.current.getBoundingClientRect();
-          const svgMouseX = Math.max(e.clientX - svgRect.left, 0) / camera.zoom;
-          const svgMouseY = Math.max(e.clientY - svgRect.top, 0) / camera.zoom;
+          const svgMouseX = Math.max(e.clientX - svgRect.left, 0);
+          const svgMouseY = Math.max(e.clientY - svgRect.top, 0);
 
           const angle = Math.atan2(
             svgMouseY - interaction.centerY,
@@ -201,62 +204,57 @@ const Viewport = () => {
           break;
       }
     },
-    [camera.zoom, interaction, startInteraction, updateShape],
+    [interaction, startInteraction, updateShape],
   );
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('mouseup', stopInteraction);
 
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseup', stopInteraction);
     };
-  }, [handleKeyDown, handleMouseMove, stopInteraction]);
+  }, [handleKeyDown, handleKeyUp, handleMouseMove, stopInteraction]);
 
   return (
     <svg
       id="viewport"
       ref={svgRef}
-      width={settings.width}
-      height={settings.height}
+      width={document.width}
+      height={document.height}
       className={css.viewport}
-      onMouseDown={handleClickOutside}
+      onMouseDown={handleMouseDownCanvas}
     >
-      <g
-        transform={`
-          scale(${camera.zoom})
-          translate(${camera.offsetX}, ${camera.offsetY})
-          `}
-      >
-        {shapesById && (
-          <>
-            {shapeIds.map((id) => {
-              const item = shapesById[id];
-              return (
-                !!item && (
-                  <ShapeRenderer
-                    key={id}
-                    shape={item}
-                    onMouseDown={(e) => handleMouseDownShape(e, id)}
-                  />
-                )
-              );
-            })}
+      {shapesById && (
+        <>
+          {shapeIds.map((id) => {
+            const item = shapesById[id];
+            return (
+              !!item && (
+                <ShapeRenderer
+                  key={id}
+                  shape={item}
+                  onMouseDown={(e) => handleMouseDownShape(e, id)}
+                />
+              )
+            );
+          })}
 
-            {!!selectedIds.length && <ShapeWrapper />}
-          </>
-        )}
-      </g>
+          {!!selectedIds.length && <ShapeWrapper />}
+        </>
+      )}
 
       {/* HELPER */}
       <rect
         x={0}
         y={0}
-        width={settings.width}
-        height={settings.height}
+        width={document.width}
+        height={document.height}
         fill="none"
         stroke="#d6dade"
         data-export="exclude"

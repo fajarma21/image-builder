@@ -6,13 +6,13 @@ import css from './View.module.scss';
 import Viewport from './components/Viewport';
 
 const Center = () => {
-  const settings = useEditorStore((state) => state.settings);
+  const document = useEditorStore((state) => state.document);
 
   return (
     <div className={css.center}>
       <Toolbar />
       <div className={css.wrapper}>
-        <div className={css.inner} style={{ width: settings.width }}>
+        <div className={css.inner} style={{ width: document.width }}>
           <Info />
           <Viewport />
         </div>

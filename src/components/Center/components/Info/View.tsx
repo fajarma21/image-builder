@@ -3,13 +3,13 @@ import useEditorStore from '@/stores/useEditorStore';
 import css from './View.module.scss';
 
 const Info = () => {
-  const settings = useEditorStore((state) => state.settings);
+  const document = useEditorStore((state) => state.document);
 
   return (
     <div className={css.info}>
       <p>Canvas</p>
       <p>
-        {settings.width} x {settings.height} px
+        {document.width} x {document.height} px
       </p>
     </div>
   );

@@ -1,3 +1,5 @@
+import type { MouseEvent } from 'react';
+
 import { COLOR_OUTLINE } from '@/constants/colors';
 import { RESIZING, ROTATING } from '@/constants/interaction';
 import useEditorStore from '@/stores/useEditorStore';
@@ -6,6 +8,7 @@ import type { ShapeControlProps } from './View.types';
 
 const ShapeControl = ({ shape }: ShapeControlProps) => {
   const camera = useEditorStore((state) => state.camera);
+  const { zoom } = camera;
   const startInteraction = useEditorStore((state) => state.startInteraction);
 
   const { x, y, width, height } = shape;
@@ -15,12 +18,20 @@ const ShapeControl = ({ shape }: ShapeControlProps) => {
   const outlineProps = {
     fill: 'none',
     stroke: COLOR_OUTLINE,
-    strokeWidth: 1 / camera.zoom,
+    strokeWidth: 1 / zoom,
   };
 
-  const resizeHandleSize = 8 / camera.zoom;
-  const rotateHandleSize = 6 / camera.zoom;
-  const rotateHandleOffset = 30 / camera.zoom;
+  const resizeHandleSize = 8 / zoom;
+  const rotateHandleSize = 6 / zoom;
+  const rotateHandleOffset = 30 / zoom;
+
+  const handleStartResize = (e: MouseEvent) => {
+    startInteraction(RESIZING, e.clientX, e.clientY, shape);
+  };
+
+  const handleStartRotate = (e: MouseEvent) => {
+    startInteraction(ROTATING, e.clientX, e.clientY, shape);
+  };
 
   return (
     <>
@@ -32,9 +43,7 @@ const ShapeControl = ({ shape }: ShapeControlProps) => {
         height={resizeHandleSize}
         {...outlineProps}
         fill="white"
-        onMouseDown={(e) =>
-          startInteraction(RESIZING, e.clientX, e.clientY, shape)
-        }
+        onMouseDown={handleStartResize}
       />
 
       {/* ROTATE */}
@@ -51,16 +60,14 @@ const ShapeControl = ({ shape }: ShapeControlProps) => {
         r={rotateHandleSize}
         {...outlineProps}
         fill="white"
-        onMouseDown={(e) =>
-          startInteraction(ROTATING, e.clientX, e.clientY, shape)
-        }
+        onMouseDown={handleStartRotate}
       />
 
       {/* CENTER */}
       <circle
         cx={centerX}
         cy={centerY}
-        r={1 / camera.zoom}
+        r={1 / zoom}
         {...outlineProps}
         fill={COLOR_OUTLINE}
       />

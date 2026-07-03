@@ -5,24 +5,20 @@ import { EDITING_TEXT, IDLE, MOUSE_DOWN } from '@/constants/interaction';
 
 import { DEFAULT_GENERIC_SHAPE, DEFAULT_TEXT_SHAPE } from './index.constants';
 import type { EditorStore } from './index.types';
-import {
-  createSnapshot,
-  getFirstPosition,
-  moveShapeId,
-  pushHistory,
-} from './index.helpers';
+import { createSnapshot, moveShapeId, pushHistory } from './index.helpers';
 import isEmptyObject from '@/utils/isEmptyObject';
 import type { Shape } from '@/types/shape';
 
 const useEditorStore = create<EditorStore>((set) => ({
+  document: {
+    width: 800,
+    height: 600,
+    backgroundColor: '#ffffff',
+  },
   camera: {
     offsetX: 0,
     offsetY: 0,
     zoom: 1,
-  },
-  settings: {
-    width: 800,
-    height: 600,
   },
   shapesById: null,
   shapeIds: [],
@@ -49,7 +45,6 @@ const useEditorStore = create<EditorStore>((set) => ({
             type: shape,
             name,
             ...defaultShape,
-            ...getFirstPosition(state, defaultShape.width, defaultShape.height),
           },
         },
         shapeIds: [...state.shapeIds, id],
@@ -73,7 +68,6 @@ const useEditorStore = create<EditorStore>((set) => ({
             ...DEFAULT_GENERIC_SHAPE,
             width,
             height,
-            ...getFirstPosition(state, width, height),
           },
         },
         shapeIds: [...state.shapeIds, id],

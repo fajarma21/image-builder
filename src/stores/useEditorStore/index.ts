@@ -1,7 +1,12 @@
 import { create } from 'zustand';
 
 import { SHAPE_IMAGE, SHAPE_TEXT } from '@/constants';
-import { EDITING_TEXT, IDLE, MOUSE_DOWN } from '@/constants/interaction';
+import {
+  EDITING_TEXT,
+  IDLE,
+  MOUSE_DOWN,
+  PANNING,
+} from '@/constants/interaction';
 
 import { DEFAULT_GENERIC_SHAPE, DEFAULT_TEXT_SHAPE } from './index.constants';
 import type { EditorStore } from './index.types';
@@ -16,8 +21,6 @@ const useEditorStore = create<EditorStore>((set) => ({
     backgroundColor: '#ffffff',
   },
   camera: {
-    offsetX: 0,
-    offsetY: 0,
     zoom: 1,
   },
   shapesById: null,
@@ -133,6 +136,8 @@ const useEditorStore = create<EditorStore>((set) => ({
         type,
         startMouseX: mouseX,
         startMouseY: mouseY,
+        scrollLeft: 0,
+        scrollTop: 0,
         startShapes: state.selectedIds.map((id) => state.shapesById![id]),
         centerX: shape ? shape.x + shape.width / 2 : 0,
         centerY: shape ? shape.y + shape.height / 2 : 0,
@@ -140,6 +145,16 @@ const useEditorStore = create<EditorStore>((set) => ({
       },
     })),
   startEditingText: () => set(() => ({ interaction: { type: EDITING_TEXT } })),
+  startPan: (startMouseX, startMouseY, scrollLeft, scrollTop) =>
+    set(() => ({
+      interaction: {
+        type: PANNING,
+        startMouseX,
+        startMouseY,
+        scrollLeft,
+        scrollTop,
+      },
+    })),
   stopInteraction: (e) =>
     set((state) => {
       if (
@@ -153,7 +168,8 @@ const useEditorStore = create<EditorStore>((set) => ({
       if (
         (e.clientX !== startState.startMouseX ||
           e.clientY !== startState.startMouseY) &&
-        state.interaction.type !== MOUSE_DOWN
+        state.interaction.type !== MOUSE_DOWN &&
+        state.interaction.type !== PANNING
       ) {
         history = pushHistory({
           ...state.interaction.startSnapshot,
@@ -296,6 +312,13 @@ const useEditorStore = create<EditorStore>((set) => ({
         shapeIds: moveShapeId(state.shapeIds, id, -1),
       };
     }),
+  zooming: (zoom) =>
+    set((state) => ({
+      camera: {
+        ...state.camera,
+        zoom,
+      },
+    })),
 }));
 
 export default useEditorStore;

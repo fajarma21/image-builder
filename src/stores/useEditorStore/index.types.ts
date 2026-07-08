@@ -6,7 +6,12 @@ import type {
   Shape,
   ShapeType,
 } from '@/types/shape';
-import type { EDITING_TEXT, IDLE, MOUSE_DOWN } from '@/constants/interaction';
+import type {
+  EDITING_TEXT,
+  IDLE,
+  MOUSE_DOWN,
+  PANNING,
+} from '@/constants/interaction';
 
 interface IdleInteraction {
   type: typeof IDLE;
@@ -14,6 +19,14 @@ interface IdleInteraction {
 
 interface EditingTextInteraction {
   type: typeof EDITING_TEXT;
+}
+
+interface PanningInteraction {
+  type: typeof PANNING;
+  startMouseX: number;
+  startMouseY: number;
+  scrollLeft: number;
+  scrollTop: number;
 }
 
 interface MouseDownInteraction {
@@ -27,8 +40,6 @@ interface GenericInteraction extends InteractionState {
 }
 
 export interface Camera {
-  offsetX: number;
-  offsetY: number;
   zoom: number;
 }
 
@@ -51,7 +62,8 @@ export interface EditorStore extends EditorSnapshot {
     | IdleInteraction
     | EditingTextInteraction
     | MouseDownInteraction
-    | GenericInteraction;
+    | GenericInteraction
+    | PanningInteraction;
 
   past: EditorSnapshot[];
   future: EditorSnapshot[];
@@ -79,6 +91,12 @@ export interface EditorStore extends EditorSnapshot {
     shape?: Shape,
   ) => void;
   startEditingText: () => void;
+  startPan: (
+    startMouseX: number,
+    startMouseY: number,
+    scrollLeft: number,
+    scrollTop: number,
+  ) => void;
   stopInteraction: (e: globalThis.MouseEvent) => void;
 
   pushHistory: (snapshot: EditorSnapshot) => void;
@@ -95,4 +113,6 @@ export interface EditorStore extends EditorSnapshot {
   bringForward: (id: string) => void;
   sendToBack: (id: string) => void;
   sendBackward: (id: string) => void;
+
+  zooming: (zoom: number) => void;
 }

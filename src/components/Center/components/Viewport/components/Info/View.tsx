@@ -3,14 +3,15 @@ import useEditorStore from '@/stores/useEditorStore';
 import css from './View.module.scss';
 
 const Info = () => {
+  const camera = useEditorStore((state) => state.camera);
   const document = useEditorStore((state) => state.document);
 
   return (
     <div className={css.info}>
-      <p>Canvas</p>
       <p>
-        {document.width} x {document.height} px
+        Canvas &mdash; {document.width}x{document.height} px
       </p>
+      <p>Zoom {camera.zoom.toFixed(1)}x</p>
     </div>
   );
 };

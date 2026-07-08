@@ -1,7 +1,7 @@
 import downloadFile from './downloadFile';
 
 const exportToPng = (width: number, height: number) => {
-  const svg = document.getElementById('viewport');
+  const svg = document.getElementById('canvas');
 
   if (!svg) return;
   const svgClone = svg.cloneNode(true);

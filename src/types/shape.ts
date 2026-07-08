@@ -9,6 +9,7 @@ import {
   RESIZING,
   type IDLE,
   type MOUSE_DOWN,
+  type PANNING,
   type ROTATING,
 } from '@/constants/interaction';
 
@@ -53,6 +54,7 @@ export type GenericInteractionTypes =
 export type AllInteractionTypes =
   | typeof IDLE
   | typeof MOUSE_DOWN
+  | typeof PANNING
   | GenericInteractionTypes;
 
 export interface InteractionState {

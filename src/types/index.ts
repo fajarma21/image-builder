@@ -7,7 +7,5 @@ export interface ShapeComponent extends SVGAttributes<SupportedSVG> {
 }
 
 export interface Camera {
-  offsetX: number;
-  offsetY: number;
   zoom: number;
 }

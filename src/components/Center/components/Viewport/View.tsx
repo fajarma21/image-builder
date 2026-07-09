@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, type MouseEvent } from 'react';
 import { flushSync } from 'react-dom';
 
+import MarqueeRect from '@/components/MarqueeRect';
 import ShapeRenderer from '@/components/ShapeRenderer';
 import ShapeWrapper from '@/components/ShapeWrapper';
 import { MAX_ZOOM } from '@/constants';
@@ -8,20 +9,27 @@ import {
   DRAGGING,
   EDITING_TEXT,
   IDLE,
-  MOUSE_DOWN,
+  MARQUEE,
+  MOUSE_DOWN_EMPTY,
+  MOUSE_DOWN_SHAPE,
   PANNING,
   RESIZING,
   ROTATING,
 } from '@/constants/interaction';
 import useEditorStore from '@/stores/useEditorStore';
 import useKeyboardStore from '@/stores/useKeyboardStore';
+import getBounds from '@/utils/getBounds';
+import intersects from '@/utils/intersects';
 import isTextEditing from '@/utils/isTextEditing';
+import normalizeRect from '@/utils/normalizeRect';
+import viewportToCanvas from '@/utils/viewportToCanvas';
 
 import Info from './components/Info';
 import { ARROW_VALUES } from './View.constants';
 import css from './View.module.scss';
 
 // TODO: resize and rotate multiselect support
+// TODO: apply viewporttocanvas helper for all coordinates
 
 const Viewport = () => {
   const camera = useEditorStore((state) => state.camera);
@@ -33,6 +41,7 @@ const Viewport = () => {
   const spaceKey = useKeyboardStore((state) => state.spaceKey);
 
   const selectOnly = useEditorStore((state) => state.selectOnly);
+  const selectMultiple = useEditorStore((state) => state.selectMultiple);
   const toggleSelection = useEditorStore((state) => state.toggleSelection);
   const clearSelection = useEditorStore((state) => state.clearSelection);
   const selectAll = useEditorStore((state) => state.selectAll);
@@ -49,12 +58,23 @@ const Viewport = () => {
   const paste = useEditorStore((state) => state.paste);
   const toggleSpace = useKeyboardStore((state) => state.toggleSpace);
   const zooming = useEditorStore((state) => state.zooming);
+  const marquee = useEditorStore((state) => state.marquee);
 
   const viewportRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
 
   const handleMouseDownCanvas = (e: MouseEvent) => {
-    if (e.target === svgRef.current && !spaceKey) clearSelection();
+    if (e.target === svgRef.current && !spaceKey) {
+      clearSelection();
+
+      const { canvasX, canvasY } = viewportToCanvas(
+        e.clientX,
+        e.clientY,
+        camera,
+        svgRef.current,
+      );
+      startInteraction(MOUSE_DOWN_EMPTY, canvasX, canvasY);
+    }
   };
 
   const handleMouseDownShape = (e: MouseEvent, id: string) => {
@@ -63,7 +83,7 @@ const Viewport = () => {
     if (e.shiftKey) toggleSelection(id);
     else if (!selectedIds.includes(id)) selectOnly(id);
 
-    startInteraction(MOUSE_DOWN, e.clientX, e.clientY);
+    startInteraction(MOUSE_DOWN_SHAPE, e.clientX, e.clientY);
   };
 
   const handleKeyDown = useCallback(
@@ -196,14 +216,27 @@ const Viewport = () => {
 
   const handleMouseMove = useCallback(
     (e: globalThis.MouseEvent) => {
-      if (interaction.type === IDLE || interaction.type === EDITING_TEXT)
+      if (
+        !svgRef.current ||
+        interaction.type === IDLE ||
+        interaction.type === EDITING_TEXT
+      )
         return;
 
       const dx = (e.clientX - interaction.startMouseX) / camera.zoom;
       const dy = (e.clientY - interaction.startMouseY) / camera.zoom;
 
       switch (interaction.type) {
-        case MOUSE_DOWN: {
+        case MOUSE_DOWN_EMPTY: {
+          if (Math.abs(dx) > 3 || Math.abs(dy) > 3)
+            startInteraction(
+              MARQUEE,
+              interaction.startMouseX,
+              interaction.startMouseY,
+            );
+          break;
+        }
+        case MOUSE_DOWN_SHAPE: {
           if (Math.abs(dx) > 3 || Math.abs(dy) > 3)
             startInteraction(
               DRAGGING,
@@ -272,18 +305,47 @@ const Viewport = () => {
           break;
         }
 
+        case MARQUEE: {
+          const { canvasX, canvasY } = viewportToCanvas(
+            e.clientX,
+            e.clientY,
+            camera,
+            svgRef.current,
+          );
+          marquee(canvasX, canvasY);
+          break;
+        }
+
         default:
           break;
       }
     },
-    [interaction, startInteraction, updateShape, camera.zoom],
+    [interaction, startInteraction, updateShape, camera, marquee],
+  );
+
+  const handleMouseUp = useCallback(
+    (e: globalThis.MouseEvent) => {
+      if (interaction.type === MARQUEE) {
+        const marquee = normalizeRect(interaction);
+        const ids: string[] = [];
+        for (const shapeId of shapeIds) {
+          const shape = shapesById![shapeId];
+          const shapeBounds = getBounds(shape);
+
+          if (intersects(marquee, shapeBounds)) ids.push(shapeId);
+        }
+        selectMultiple(ids);
+      }
+      stopInteraction(e);
+    },
+    [interaction, selectMultiple, shapeIds, shapesById, stopInteraction],
   );
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('keyup', handleKeyUp);
     window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseup', stopInteraction);
+    window.addEventListener('mouseup', handleMouseUp);
 
     const svg = svgRef.current;
     if (svg) svg.addEventListener('wheel', handleZoom, { passive: false });
@@ -292,17 +354,11 @@ const Viewport = () => {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
       window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', stopInteraction);
+      window.removeEventListener('mouseup', handleMouseUp);
 
       if (svg) svg.removeEventListener('wheel', handleZoom);
     };
-  }, [
-    handleKeyDown,
-    handleKeyUp,
-    handleMouseMove,
-    handleZoom,
-    stopInteraction,
-  ]);
+  }, [handleKeyDown, handleKeyUp, handleMouseMove, handleZoom, handleMouseUp]);
 
   return (
     <div
@@ -342,6 +398,8 @@ const Viewport = () => {
               {!!selectedIds.length && <ShapeWrapper />}
             </>
           )}
+
+          <MarqueeRect />
 
           {/* HELPER */}
           <rect

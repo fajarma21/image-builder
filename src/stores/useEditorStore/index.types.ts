@@ -9,9 +9,12 @@ import type {
 import type {
   EDITING_TEXT,
   IDLE,
-  MOUSE_DOWN,
+  MARQUEE,
+  MOUSE_DOWN_SHAPE,
+  MOUSE_DOWN_EMPTY,
   PANNING,
 } from '@/constants/interaction';
+import type { Camera } from '@/types';
 
 interface IdleInteraction {
   type: typeof IDLE;
@@ -29,18 +32,27 @@ interface PanningInteraction {
   scrollTop: number;
 }
 
-interface MouseDownInteraction {
-  type: typeof MOUSE_DOWN;
+interface MouseDownShapeInteraction {
+  type: typeof MOUSE_DOWN_SHAPE;
+  startMouseX: number;
+  startMouseY: number;
+}
+interface MouseDownEmptyInteraction {
+  type: typeof MOUSE_DOWN_EMPTY;
   startMouseX: number;
   startMouseY: number;
 }
 
-interface GenericInteraction extends InteractionState {
-  type: GenericInteractionTypes;
+interface MarqueeInteraction {
+  type: typeof MARQUEE;
+  startMouseX: number;
+  startMouseY: number;
+  currentMouseX: number;
+  currentMouseY: number;
 }
 
-export interface Camera {
-  zoom: number;
+interface GenericInteraction extends InteractionState {
+  type: GenericInteractionTypes;
 }
 
 interface Document {
@@ -61,9 +73,11 @@ export interface EditorStore extends EditorSnapshot {
   interaction:
     | IdleInteraction
     | EditingTextInteraction
-    | MouseDownInteraction
+    | MouseDownShapeInteraction
+    | MouseDownEmptyInteraction
     | GenericInteraction
-    | PanningInteraction;
+    | PanningInteraction
+    | MarqueeInteraction;
 
   past: EditorSnapshot[];
   future: EditorSnapshot[];
@@ -77,6 +91,7 @@ export interface EditorStore extends EditorSnapshot {
     height: number,
   ) => void;
   selectOnly: (id: string) => void;
+  selectMultiple: (ids: string[]) => void;
   toggleSelection: (id: string) => void;
   clearSelection: () => void;
   selectAll: () => void;
@@ -115,4 +130,6 @@ export interface EditorStore extends EditorSnapshot {
   sendBackward: (id: string) => void;
 
   zooming: (zoom: number) => void;
+
+  marquee: (newX: number, newY: number) => void;
 }

@@ -4,7 +4,9 @@ import { SHAPE_IMAGE, SHAPE_TEXT } from '@/constants';
 import {
   EDITING_TEXT,
   IDLE,
-  MOUSE_DOWN,
+  MARQUEE,
+  MOUSE_DOWN_EMPTY,
+  MOUSE_DOWN_SHAPE,
   PANNING,
 } from '@/constants/interaction';
 
@@ -79,6 +81,7 @@ const useEditorStore = create<EditorStore>((set) => ({
       };
     }),
   selectOnly: (id) => set(() => ({ selectedIds: [id] })),
+  selectMultiple: (ids) => set(() => ({ selectedIds: ids })),
   toggleSelection: (id) =>
     set((state) => ({
       selectedIds: state.selectedIds.includes(id)
@@ -168,8 +171,10 @@ const useEditorStore = create<EditorStore>((set) => ({
       if (
         (e.clientX !== startState.startMouseX ||
           e.clientY !== startState.startMouseY) &&
-        state.interaction.type !== MOUSE_DOWN &&
-        state.interaction.type !== PANNING
+        state.interaction.type !== MOUSE_DOWN_SHAPE &&
+        state.interaction.type !== MOUSE_DOWN_EMPTY &&
+        state.interaction.type !== PANNING &&
+        state.interaction.type !== MARQUEE
       ) {
         history = pushHistory({
           ...state.interaction.startSnapshot,
@@ -317,6 +322,14 @@ const useEditorStore = create<EditorStore>((set) => ({
       camera: {
         ...state.camera,
         zoom,
+      },
+    })),
+  marquee: (newX, newY) =>
+    set((state) => ({
+      interaction: {
+        ...state.interaction,
+        currentMouseX: newX,
+        currentMouseY: newY,
       },
     })),
 }));

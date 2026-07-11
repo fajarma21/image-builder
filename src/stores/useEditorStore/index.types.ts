@@ -1,11 +1,4 @@
-import type {
-  AllInteractionTypes,
-  EditorSnapshot,
-  GenericInteractionTypes,
-  InteractionState,
-  Shape,
-  ShapeType,
-} from '@/types/shape';
+import type { EditorSnapshot, Shape, ShapeType } from '@/types/shape';
 import type {
   EDITING_TEXT,
   IDLE,
@@ -13,11 +6,67 @@ import type {
   MOUSE_DOWN_SHAPE,
   MOUSE_DOWN_EMPTY,
   PANNING,
+  DRAGGING,
+  RESIZING,
+  ROTATING,
 } from '@/constants/interaction';
-import type { Camera } from '@/types';
+import type { Bounds, Camera } from '@/types';
+
+type AllInteractionTypes =
+  | typeof IDLE
+  | typeof MOUSE_DOWN_SHAPE
+  | typeof MOUSE_DOWN_EMPTY
+  | typeof DRAGGING
+  | typeof RESIZING
+  | typeof ROTATING
+  | typeof EDITING_TEXT
+  | typeof PANNING
+  | typeof MARQUEE;
 
 interface IdleInteraction {
   type: typeof IDLE;
+}
+
+interface DraggingInteraction {
+  type: typeof DRAGGING;
+  startMouseX: number;
+  startMouseY: number;
+  startShapes: Shape[];
+  centerX: number;
+  centerY: number;
+  startSnapshot: EditorSnapshot;
+}
+
+interface ResizingInteraction {
+  type: typeof RESIZING;
+  startMouseX: number;
+  startMouseY: number;
+  startShapes: Shape[];
+  centerX: number;
+  centerY: number;
+  startSnapshot: EditorSnapshot;
+}
+
+interface RotatingInteraction {
+  type: typeof ROTATING;
+  startMouseX: number;
+  startMouseY: number;
+  startShapes: Shape[];
+  centerX: number;
+  centerY: number;
+  startSnapshot: EditorSnapshot;
+}
+
+interface MouseDownShapeInteraction {
+  type: typeof MOUSE_DOWN_SHAPE;
+  startMouseX: number;
+  startMouseY: number;
+}
+
+interface MouseDownEmptyInteraction {
+  type: typeof MOUSE_DOWN_EMPTY;
+  startMouseX: number;
+  startMouseY: number;
 }
 
 interface EditingTextInteraction {
@@ -32,27 +81,12 @@ interface PanningInteraction {
   scrollTop: number;
 }
 
-interface MouseDownShapeInteraction {
-  type: typeof MOUSE_DOWN_SHAPE;
-  startMouseX: number;
-  startMouseY: number;
-}
-interface MouseDownEmptyInteraction {
-  type: typeof MOUSE_DOWN_EMPTY;
-  startMouseX: number;
-  startMouseY: number;
-}
-
 interface MarqueeInteraction {
   type: typeof MARQUEE;
   startMouseX: number;
   startMouseY: number;
   currentMouseX: number;
   currentMouseY: number;
-}
-
-interface GenericInteraction extends InteractionState {
-  type: GenericInteractionTypes;
 }
 
 interface Document {
@@ -65,6 +99,15 @@ export interface PushHistory extends EditorSnapshot {
   past: EditorStore['past'];
 }
 
+export interface StartInteractionParams {
+  type: AllInteractionTypes;
+  mouseX?: number;
+  mouseY?: number;
+  scrollX?: number;
+  scrollY?: number;
+  shape?: Shape;
+}
+
 export interface EditorStore extends EditorSnapshot {
   camera: Camera;
 
@@ -72,16 +115,19 @@ export interface EditorStore extends EditorSnapshot {
 
   interaction:
     | IdleInteraction
+    | DraggingInteraction
+    | ResizingInteraction
+    | RotatingInteraction
     | EditingTextInteraction
     | MouseDownShapeInteraction
     | MouseDownEmptyInteraction
-    | GenericInteraction
     | PanningInteraction
     | MarqueeInteraction;
 
   past: EditorSnapshot[];
   future: EditorSnapshot[];
   clipboard: Shape[];
+  selectionBounds: Bounds | null;
 
   addShape: (shape: ShapeType) => void;
   addImage: (
@@ -99,19 +145,7 @@ export interface EditorStore extends EditorSnapshot {
   updateShape: (id: string, shape: Partial<Shape>) => void;
   updateSize: (id: string, width: number, height: number) => void;
 
-  startInteraction: (
-    interaction: AllInteractionTypes,
-    mouseX: number,
-    mouseY: number,
-    shape?: Shape,
-  ) => void;
-  startEditingText: () => void;
-  startPan: (
-    startMouseX: number,
-    startMouseY: number,
-    scrollLeft: number,
-    scrollTop: number,
-  ) => void;
+  startInteraction: (data: StartInteractionParams) => void;
   stopInteraction: (e: globalThis.MouseEvent) => void;
 
   pushHistory: (snapshot: EditorSnapshot) => void;
@@ -132,4 +166,5 @@ export interface EditorStore extends EditorSnapshot {
   zooming: (zoom: number) => void;
 
   marquee: (newX: number, newY: number) => void;
+  updateSelectionBounds: (selectionBounds: Bounds) => void;
 }

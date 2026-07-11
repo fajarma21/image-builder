@@ -4,14 +4,6 @@ import {
   type SHAPE_RECT,
   type SHAPE_TEXT,
 } from '@/constants';
-import {
-  DRAGGING,
-  RESIZING,
-  type IDLE,
-  type MOUSE_DOWN,
-  type PANNING,
-  type ROTATING,
-} from '@/constants/interaction';
 
 export type SupportedSVG =
   | SVGRectElement
@@ -45,23 +37,4 @@ export interface EditorSnapshot {
   shapesById: Record<string, Shape> | null;
   shapeIds: string[];
   selectedIds: string[];
-}
-
-export type GenericInteractionTypes =
-  | typeof DRAGGING
-  | typeof RESIZING
-  | typeof ROTATING;
-export type AllInteractionTypes =
-  | typeof IDLE
-  | typeof MOUSE_DOWN
-  | typeof PANNING
-  | GenericInteractionTypes;
-
-export interface InteractionState {
-  startMouseX: number;
-  startMouseY: number;
-  startShapes: Shape[];
-  centerX: number;
-  centerY: number;
-  startSnapshot: EditorSnapshot;
 }

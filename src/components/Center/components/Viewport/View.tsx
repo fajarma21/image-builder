@@ -19,6 +19,7 @@ import {
 import useEditorStore from '@/stores/useEditorStore';
 import useKeyboardStore from '@/stores/useKeyboardStore';
 import getBounds from '@/utils/getBounds';
+import getSelectionBounds from '@/utils/getSelectionBounds';
 import intersects from '@/utils/intersects';
 import isTextEditing from '@/utils/isTextEditing';
 import normalizeRect from '@/utils/normalizeRect';
@@ -27,6 +28,7 @@ import viewportToCanvas from '@/utils/viewportToCanvas';
 import Info from './components/Info';
 import { ARROW_VALUES } from './View.constants';
 import css from './View.module.scss';
+import type { Bounds } from '@/types';
 
 // TODO: resize and rotate multiselect support
 // TODO: apply viewporttocanvas helper for all coordinates
@@ -38,6 +40,7 @@ const Viewport = () => {
   const shapeIds = useEditorStore((state) => state.shapeIds);
   const selectedIds = useEditorStore((state) => state.selectedIds);
   const interaction = useEditorStore((state) => state.interaction);
+  const selectionBounds = useEditorStore((state) => state.selectionBounds);
   const spaceKey = useKeyboardStore((state) => state.spaceKey);
 
   const selectOnly = useEditorStore((state) => state.selectOnly);
@@ -47,7 +50,6 @@ const Viewport = () => {
   const selectAll = useEditorStore((state) => state.selectAll);
   const deleteSelected = useEditorStore((state) => state.deleteSelected);
   const startInteraction = useEditorStore((state) => state.startInteraction);
-  const startPan = useEditorStore((state) => state.startPan);
   const stopInteraction = useEditorStore((state) => state.stopInteraction);
   const updateShape = useEditorStore((state) => state.updateShape);
   const undo = useEditorStore((state) => state.undo);
@@ -59,6 +61,9 @@ const Viewport = () => {
   const toggleSpace = useKeyboardStore((state) => state.toggleSpace);
   const zooming = useEditorStore((state) => state.zooming);
   const marquee = useEditorStore((state) => state.marquee);
+  const updateSelectionBounds = useEditorStore(
+    (state) => state.updateSelectionBounds,
+  );
 
   const viewportRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
@@ -73,7 +78,12 @@ const Viewport = () => {
         camera,
         svgRef.current,
       );
-      startInteraction(MOUSE_DOWN_EMPTY, canvasX, canvasY);
+
+      startInteraction({
+        type: MOUSE_DOWN_EMPTY,
+        mouseX: canvasX,
+        mouseY: canvasY,
+      });
     }
   };
 
@@ -83,7 +93,11 @@ const Viewport = () => {
     if (e.shiftKey) toggleSelection(id);
     else if (!selectedIds.includes(id)) selectOnly(id);
 
-    startInteraction(MOUSE_DOWN_SHAPE, e.clientX, e.clientY);
+    startInteraction({
+      type: MOUSE_DOWN_SHAPE,
+      mouseX: e.clientX,
+      mouseY: e.clientY,
+    });
   };
 
   const handleKeyDown = useCallback(
@@ -173,14 +187,13 @@ const Viewport = () => {
 
   const handleStartPan = (e: MouseEvent) => {
     if (spaceKey && viewportRef.current) {
-      const startX = e.pageX - viewportRef.current.offsetLeft;
-      const startY = e.pageY - viewportRef.current.offsetTop;
-      startPan(
-        startX,
-        startY,
-        viewportRef.current.scrollLeft,
-        viewportRef.current.scrollTop,
-      );
+      startInteraction({
+        type: PANNING,
+        mouseX: e.pageX - viewportRef.current.offsetLeft,
+        mouseY: e.pageY - viewportRef.current.offsetTop,
+        scrollX: viewportRef.current.scrollLeft,
+        scrollY: viewportRef.current.scrollTop,
+      });
     }
   };
 
@@ -227,22 +240,14 @@ const Viewport = () => {
       const dy = (e.clientY - interaction.startMouseY) / camera.zoom;
 
       switch (interaction.type) {
-        case MOUSE_DOWN_EMPTY: {
-          if (Math.abs(dx) > 3 || Math.abs(dy) > 3)
-            startInteraction(
-              MARQUEE,
-              interaction.startMouseX,
-              interaction.startMouseY,
-            );
-          break;
-        }
+        case MOUSE_DOWN_EMPTY:
         case MOUSE_DOWN_SHAPE: {
           if (Math.abs(dx) > 3 || Math.abs(dy) > 3)
-            startInteraction(
-              DRAGGING,
-              interaction.startMouseX,
-              interaction.startMouseY,
-            );
+            startInteraction({
+              type: interaction.type === MOUSE_DOWN_EMPTY ? MARQUEE : DRAGGING,
+              mouseX: interaction.startMouseX,
+              mouseY: interaction.startMouseY,
+            });
           break;
         }
 
@@ -328,18 +333,40 @@ const Viewport = () => {
       if (interaction.type === MARQUEE) {
         const marquee = normalizeRect(interaction);
         const ids: string[] = [];
+
+        let tempSelectionBounds: Bounds | null = null;
+
         for (const shapeId of shapeIds) {
           const shape = shapesById![shapeId];
           const shapeBounds = getBounds(shape);
 
-          if (intersects(marquee, shapeBounds)) ids.push(shapeId);
+          if (intersects(marquee, shapeBounds)) {
+            ids.push(shapeId);
+            tempSelectionBounds = getSelectionBounds(
+              shapeBounds,
+              tempSelectionBounds,
+            );
+          }
         }
+
+        if (tempSelectionBounds) updateSelectionBounds(tempSelectionBounds);
+
         selectMultiple(ids);
       }
+
       stopInteraction(e);
     },
-    [interaction, selectMultiple, shapeIds, shapesById, stopInteraction],
+    [
+      interaction,
+      selectMultiple,
+      shapeIds,
+      shapesById,
+      stopInteraction,
+      updateSelectionBounds,
+    ],
   );
+
+  console.log(selectionBounds);
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
@@ -399,19 +426,18 @@ const Viewport = () => {
             </>
           )}
 
-          <MarqueeRect />
+          {selectionBounds && (
+            <rect
+              x={selectionBounds.left}
+              y={selectionBounds.top}
+              width={selectionBounds.right - selectionBounds.left}
+              height={selectionBounds.bottom - selectionBounds.top}
+              fill="none"
+              stroke="red"
+            />
+          )}
 
-          {/* HELPER */}
-          <rect
-            x={0}
-            y={0}
-            width={document.width}
-            height={document.height}
-            fill="none"
-            stroke="#d6dade"
-            strokeWidth={1 / camera.zoom}
-            data-export="exclude"
-          />
+          <MarqueeRect />
         </svg>
       </div>
     </div>

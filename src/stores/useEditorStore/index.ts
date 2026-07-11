@@ -2,19 +2,22 @@ import { create } from 'zustand';
 
 import { SHAPE_IMAGE, SHAPE_TEXT } from '@/constants';
 import {
+  DRAGGING,
   EDITING_TEXT,
   IDLE,
   MARQUEE,
   MOUSE_DOWN_EMPTY,
   MOUSE_DOWN_SHAPE,
   PANNING,
+  RESIZING,
+  ROTATING,
 } from '@/constants/interaction';
+import isEmptyObject from '@/utils/isEmptyObject';
+import type { Shape } from '@/types/shape';
 
 import { DEFAULT_GENERIC_SHAPE, DEFAULT_TEXT_SHAPE } from './index.constants';
 import type { EditorStore } from './index.types';
 import { createSnapshot, moveShapeId, pushHistory } from './index.helpers';
-import isEmptyObject from '@/utils/isEmptyObject';
-import type { Shape } from '@/types/shape';
 
 const useEditorStore = create<EditorStore>((set) => ({
   document: {
@@ -33,6 +36,7 @@ const useEditorStore = create<EditorStore>((set) => ({
   past: [],
   future: [],
   clipboard: [],
+  selectionBounds: null,
   addShape: (shape) =>
     set((state) => {
       const id = Date.now().toString();
@@ -89,7 +93,7 @@ const useEditorStore = create<EditorStore>((set) => ({
         : [...state.selectedIds, id],
     })),
   selectAll: () => set((state) => ({ selectedIds: state.shapeIds })),
-  clearSelection: () => set(() => ({ selectedIds: [] })),
+  clearSelection: () => set(() => ({ selectedIds: [], selectionBounds: null })),
   deleteSelected: () =>
     set((state) => {
       let cleanShapesById = state.shapesById;
@@ -133,31 +137,61 @@ const useEditorStore = create<EditorStore>((set) => ({
         },
       },
     })),
-  startInteraction: (type, mouseX, mouseY, shape) =>
-    set((state) => ({
-      interaction: {
-        type,
-        startMouseX: mouseX,
-        startMouseY: mouseY,
-        scrollLeft: 0,
-        scrollTop: 0,
-        startShapes: state.selectedIds.map((id) => state.shapesById![id]),
-        centerX: shape ? shape.x + shape.width / 2 : 0,
-        centerY: shape ? shape.y + shape.height / 2 : 0,
-        startSnapshot: createSnapshot(state),
-      },
-    })),
-  startEditingText: () => set(() => ({ interaction: { type: EDITING_TEXT } })),
-  startPan: (startMouseX, startMouseY, scrollLeft, scrollTop) =>
-    set(() => ({
-      interaction: {
-        type: PANNING,
-        startMouseX,
-        startMouseY,
-        scrollLeft,
-        scrollTop,
-      },
-    })),
+  startInteraction: ({
+    type,
+    mouseX = 0,
+    mouseY = 0,
+    scrollX = 0,
+    scrollY = 0,
+    shape,
+  }) =>
+    set((state) => {
+      if (type === DRAGGING || type === RESIZING || type === ROTATING) {
+        return {
+          interaction: {
+            type,
+            startMouseX: mouseX,
+            startMouseY: mouseY,
+            startShapes: state.selectedIds.map((id) => state.shapesById![id]),
+            centerX: shape ? shape.x + shape.width / 2 : 0,
+            centerY: shape ? shape.y + shape.height / 2 : 0,
+            startSnapshot: createSnapshot(state),
+          },
+        };
+      }
+      if (type === MOUSE_DOWN_EMPTY || type === MOUSE_DOWN_SHAPE) {
+        return {
+          interaction: {
+            type,
+            startMouseX: mouseX,
+            startMouseY: mouseY,
+          },
+        };
+      }
+      if (type === PANNING) {
+        return {
+          interaction: {
+            type,
+            startMouseX: mouseX,
+            startMouseY: mouseY,
+            scrollLeft: scrollX,
+            scrollTop: scrollY,
+          },
+        };
+      }
+      if (type === MARQUEE) {
+        return {
+          interaction: {
+            type,
+            startMouseX: mouseX,
+            startMouseY: mouseY,
+            currentMouseX: mouseX,
+            currentMouseY: mouseY,
+          },
+        };
+      }
+      return { interaction: { type } };
+    }),
   stopInteraction: (e) =>
     set((state) => {
       if (
@@ -332,6 +366,7 @@ const useEditorStore = create<EditorStore>((set) => ({
         currentMouseY: newY,
       },
     })),
+  updateSelectionBounds: (selectionBounds) => set(() => ({ selectionBounds })),
 }));
 
 export default useEditorStore;

@@ -13,7 +13,7 @@ const Text = ({ shape, ...actionProps }: TextProps) => {
   const selectedIds = useEditorStore((state) => state.selectedIds);
   const interaction = useEditorStore((state) => state.interaction);
 
-  const startEditingText = useEditorStore((state) => state.startEditingText);
+  const startInteraction = useEditorStore((state) => state.startInteraction);
   const updateSize = useEditorStore((state) => state.updateSize);
 
   const textRef = useRef<SVGTextElement>(null);
@@ -42,7 +42,7 @@ const Text = ({ shape, ...actionProps }: TextProps) => {
         xmlSpace="preserve"
         className={css.text}
         {...actionProps}
-        onDoubleClick={startEditingText}
+        onDoubleClick={() => startInteraction({ type: EDITING_TEXT })}
       >
         {text}
       </text>

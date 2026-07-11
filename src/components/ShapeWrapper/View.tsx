@@ -17,7 +17,7 @@ const ShapeWrapper = () => {
 
   return (
     <g data-export="exclude">
-      {/* BOUNDING BOX */}
+      {/* SINGLE BOUNDING BOX */}
       {isSingleSelect && shape && (
         <rect
           x={shape.x}

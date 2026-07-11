@@ -9,3 +9,10 @@ export interface ShapeComponent extends SVGAttributes<SupportedSVG> {
 export interface Camera {
   zoom: number;
 }
+
+export interface Bounds {
+  top: number;
+  bottom: number;
+  left: number;
+  right: number;
+}

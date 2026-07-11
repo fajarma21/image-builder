@@ -26,11 +26,21 @@ const ShapeControl = ({ shape }: ShapeControlProps) => {
   const rotateHandleOffset = 30 / zoom;
 
   const handleStartResize = (e: MouseEvent) => {
-    startInteraction(RESIZING, e.clientX, e.clientY, shape);
+    startInteraction({
+      type: RESIZING,
+      mouseX: e.clientX,
+      mouseY: e.clientY,
+      shape,
+    });
   };
 
   const handleStartRotate = (e: MouseEvent) => {
-    startInteraction(ROTATING, e.clientX, e.clientY, shape);
+    startInteraction({
+      type: ROTATING,
+      mouseX: e.clientX,
+      mouseY: e.clientY,
+      shape,
+    });
   };
 
   return (

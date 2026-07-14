@@ -15,4 +15,8 @@ export interface Bounds {
   bottom: number;
   left: number;
   right: number;
+  width: number;
+  height: number;
+  centerX: number;
+  centerY: number;
 }

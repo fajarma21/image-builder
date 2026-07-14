@@ -6,6 +6,10 @@ const getBounds = ({ x, y, width, height }: Shape) => {
     bottom: y + height,
     left: x,
     right: x + width,
+    width,
+    height,
+    centerX: x + width / 2,
+    centerY: y + height / 2,
   };
 };
 

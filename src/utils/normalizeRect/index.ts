@@ -10,13 +10,17 @@ const normalizeRect = ({
   const bottom = Math.max(startMouseY, currentMouseY);
   const left = Math.min(startMouseX, currentMouseX);
   const right = Math.max(startMouseX, currentMouseX);
+  const width = Math.abs(currentMouseX - startMouseX);
+  const height = Math.abs(currentMouseY - startMouseY);
   return {
     top,
     bottom,
     left,
     right,
-    width: Math.abs(currentMouseX - startMouseX),
-    height: Math.abs(currentMouseY - startMouseY),
+    width,
+    height,
+    centerX: left + width / 2,
+    centerY: top + height / 2,
   };
 };
 

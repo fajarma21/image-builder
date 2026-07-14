@@ -143,6 +143,7 @@ export interface EditorStore extends EditorSnapshot {
   selectAll: () => void;
   deleteSelected: () => void;
   updateShape: (id: string, shape: Partial<Shape>) => void;
+  updateMultipleShape: (shapes: Record<string, Shape>) => void;
   updateSize: (id: string, width: number, height: number) => void;
 
   startInteraction: (data: StartInteractionParams) => void;
@@ -167,4 +168,7 @@ export interface EditorStore extends EditorSnapshot {
 
   marquee: (newX: number, newY: number) => void;
   updateSelectionBounds: (selectionBounds: Bounds) => void;
+
+  align: (alignment: string) => void;
+  distribute: (distribution: string) => void;
 }

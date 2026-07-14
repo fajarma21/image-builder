@@ -330,28 +330,40 @@ const Viewport = () => {
 
   const handleMouseUp = useCallback(
     (e: globalThis.MouseEvent) => {
-      if (interaction.type === MARQUEE) {
-        const marquee = normalizeRect(interaction);
-        const ids: string[] = [];
+      switch (interaction.type) {
+        case MARQUEE: {
+          const marquee = normalizeRect(interaction);
 
-        let tempSelectionBounds: Bounds | null = null;
+          const ids: string[] = [];
+          let tempSelectionBounds: Bounds | null = null;
 
-        for (const shapeId of shapeIds) {
-          const shape = shapesById![shapeId];
-          const shapeBounds = getBounds(shape);
+          for (const shapeId of shapeIds) {
+            const shape = shapesById![shapeId];
+            const shapeBounds = getBounds(shape);
 
-          if (intersects(marquee, shapeBounds)) {
-            ids.push(shapeId);
-            tempSelectionBounds = getSelectionBounds(
-              shapeBounds,
-              tempSelectionBounds,
-            );
+            if (intersects(shapeBounds, marquee)) {
+              ids.push(shapeId);
+              tempSelectionBounds = getSelectionBounds(
+                shapeBounds,
+                tempSelectionBounds,
+              );
+            }
           }
+
+          if (tempSelectionBounds) updateSelectionBounds(tempSelectionBounds);
+          if (ids.length) selectMultiple(ids);
+          break;
         }
 
-        if (tempSelectionBounds) updateSelectionBounds(tempSelectionBounds);
+        case DRAGGING:
+        case ROTATING:
+        case RESIZING: {
+          console.log('recalculate selection bound');
+          break;
+        }
 
-        selectMultiple(ids);
+        default:
+          break;
       }
 
       stopInteraction(e);
@@ -365,8 +377,6 @@ const Viewport = () => {
       updateSelectionBounds,
     ],
   );
-
-  console.log(selectionBounds);
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
@@ -407,6 +417,39 @@ const Viewport = () => {
           className={css.canvas}
           onMouseDown={handleMouseDownCanvas}
         >
+          <g>
+            {[...Array(10)].map(
+              (_, index) =>
+                !!index &&
+                index !== 9 && (
+                  <line
+                    key={index}
+                    x1={(document.width / 9) * index}
+                    y1={0}
+                    x2={(document.width / 9) * index}
+                    y2={document.height}
+                    stroke="#000000"
+                    strokeWidth={1}
+                  />
+                ),
+            )}
+            {[...Array(10)].map(
+              (_, index) =>
+                !!index &&
+                index !== 9 && (
+                  <line
+                    key={index}
+                    x1={0}
+                    y1={(document.height / 9) * index}
+                    x2={document.width}
+                    y2={(document.height / 9) * index}
+                    stroke="#000000"
+                    strokeWidth={1}
+                  />
+                ),
+            )}
+          </g>
+
           {shapesById && (
             <>
               {shapeIds.map((id) => {
@@ -426,15 +469,22 @@ const Viewport = () => {
             </>
           )}
 
-          {selectionBounds && (
-            <rect
-              x={selectionBounds.left}
-              y={selectionBounds.top}
-              width={selectionBounds.right - selectionBounds.left}
-              height={selectionBounds.bottom - selectionBounds.top}
-              fill="none"
-              stroke="red"
-            />
+          {selectionBounds && interaction.type === IDLE && (
+            <g>
+              <circle
+                cx={selectionBounds.centerX}
+                cy={selectionBounds.centerY}
+                r={2}
+              />
+              <rect
+                x={selectionBounds.left}
+                y={selectionBounds.top}
+                width={selectionBounds.right - selectionBounds.left}
+                height={selectionBounds.bottom - selectionBounds.top}
+                fill="none"
+                stroke="red"
+              />
+            </g>
           )}
 
           <MarqueeRect />

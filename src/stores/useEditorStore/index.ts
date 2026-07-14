@@ -12,12 +12,14 @@ import {
   RESIZING,
   ROTATING,
 } from '@/constants/interaction';
-import isEmptyObject from '@/utils/isEmptyObject';
 import type { Shape } from '@/types/shape';
+import isEmptyObject from '@/utils/isEmptyObject';
+import alignSelection from '@/utils/alignSelection';
+import distributeSelection from '@/utils/distributeSelection';
 
+import { createSnapshot, moveShapeId, pushHistory } from './index.helpers';
 import { DEFAULT_GENERIC_SHAPE, DEFAULT_TEXT_SHAPE } from './index.constants';
 import type { EditorStore } from './index.types';
-import { createSnapshot, moveShapeId, pushHistory } from './index.helpers';
 
 const useEditorStore = create<EditorStore>((set) => ({
   document: {
@@ -59,6 +61,7 @@ const useEditorStore = create<EditorStore>((set) => ({
         shapeIds: [...state.shapeIds, id],
         selectedId: id,
         selectedIds: [id],
+        selectionBounds: null,
       };
     }),
   addImage: (name, imageSrc, width, height) =>
@@ -82,17 +85,20 @@ const useEditorStore = create<EditorStore>((set) => ({
         shapeIds: [...state.shapeIds, id],
         selectedId: id,
         selectedIds: [id],
+        selectionBounds: null,
       };
     }),
-  selectOnly: (id) => set(() => ({ selectedIds: [id] })),
+  selectOnly: (id) => set(() => ({ selectedIds: [id], selectionBounds: null })),
   selectMultiple: (ids) => set(() => ({ selectedIds: ids })),
   toggleSelection: (id) =>
     set((state) => ({
       selectedIds: state.selectedIds.includes(id)
         ? state.selectedIds.filter((item) => item !== id)
         : [...state.selectedIds, id],
+      selectionBounds: null,
     })),
-  selectAll: () => set((state) => ({ selectedIds: state.shapeIds })),
+  selectAll: () =>
+    set((state) => ({ selectedIds: state.shapeIds, selectionBounds: null })),
   clearSelection: () => set(() => ({ selectedIds: [], selectionBounds: null })),
   deleteSelected: () =>
     set((state) => {
@@ -111,6 +117,7 @@ const useEditorStore = create<EditorStore>((set) => ({
           (item) => !state.selectedIds.includes(item),
         ),
         shapesById: isEmptyObject(cleanShapesById) ? null : cleanShapesById,
+        selectionBounds: null,
       };
     }),
   updateShape: (id, shape) =>
@@ -126,6 +133,10 @@ const useEditorStore = create<EditorStore>((set) => ({
         shapesById: state.shapesById,
       };
     }),
+  updateMultipleShape: (shapes) =>
+    set((state) => ({
+      shapesById: { ...state.shapesById, ...shapes },
+    })),
   updateSize: (id, width, height) =>
     set((state) => ({
       shapesById: {
@@ -287,6 +298,7 @@ const useEditorStore = create<EditorStore>((set) => ({
         },
         shapeIds: [...state.shapeIds, ...newIds],
         selectedIds: newIds,
+        selectionBounds: null,
       };
     }),
   copy: () =>
@@ -321,6 +333,7 @@ const useEditorStore = create<EditorStore>((set) => ({
         },
         shapeIds: [...state.shapeIds, ...newIds],
         selectedIds: newIds,
+        selectionBounds: null,
       };
     }),
   bringToFront: (id) =>
@@ -367,6 +380,36 @@ const useEditorStore = create<EditorStore>((set) => ({
       },
     })),
   updateSelectionBounds: (selectionBounds) => set(() => ({ selectionBounds })),
+  align: (alignment: string) =>
+    set((state) => {
+      return {
+        ...pushHistory(state),
+        shapesById: {
+          ...state.shapesById,
+          ...alignSelection(
+            alignment,
+            state.selectedIds,
+            state.shapesById,
+            state.selectionBounds,
+          ),
+        },
+      };
+    }),
+  distribute: (distribution: string) =>
+    set((state) => {
+      return {
+        ...pushHistory(state),
+        shapesById: {
+          ...state.shapesById,
+          ...distributeSelection(
+            distribution,
+            state.selectedIds,
+            state.shapesById,
+            state.selectionBounds,
+          ),
+        },
+      };
+    }),
 }));
 
 export default useEditorStore;

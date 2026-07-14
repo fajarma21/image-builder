@@ -1,5 +1,5 @@
 .viewport {
-  height: calc(100vh - 100px);
+  height: calc(100vh - 114px);
   padding: 5vh 48px 48px;
   overflow: auto;
   scroll-behavior: auto;
@@ -10,9 +10,11 @@
 }
 
 .canvas {
+  overflow: unset;
   display: block;
   margin: 0 auto;
-  background-color: #fff;
   transform-origin: top left;
-  overflow: unset;
+  border-radius: 4px;
+  border: 1px solid var(--color-canvas-outline);
+  background-color: #fff;
 }

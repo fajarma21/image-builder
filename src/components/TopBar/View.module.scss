@@ -1,3 +1,5 @@
+@use '@/styles/components' as components;
+
 .topbar {
   position: fixed;
   width: 100%;
@@ -5,13 +7,18 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
-  background-color: #333;
-  color: #fff;
+  padding: 0 16px;
   z-index: 1000;
+  border-bottom: 1px solid var(--dark-border);
+  @include components.dark;
 }
 
 .title {
   font-size: 24px;
+  font-weight: normal;
   margin: 0;
+}
+
+.exportBtn {
+  width: 150px;
 }

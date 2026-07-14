@@ -1,0 +1,23 @@
+.button {
+  all: unset;
+  cursor: pointer;
+  box-sizing: border-box;
+  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  color: var(--white-text);
+  background-color: #37383d;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+  &:focus-visible {
+    outline: 2px solid var(--color-outline);
+    outline-offset: 2px;
+  }
+}

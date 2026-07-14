@@ -1,15 +1,12 @@
 import exportToPng from '@/utils/exportToPng';
 import useEditorStore from '@/stores/useEditorStore';
 
+import Button from '../Button';
 import css from './View.module.scss';
 
 const TopBar = () => {
   const document = useEditorStore((state) => state.document);
   const shapeIds = useEditorStore((state) => state.shapeIds);
-  const past = useEditorStore((state) => state.past);
-  const future = useEditorStore((state) => state.future);
-  const undo = useEditorStore((state) => state.undo);
-  const redo = useEditorStore((state) => state.redo);
 
   const handleExport = async () => {
     exportToPng(document.width, document.height);
@@ -17,19 +14,16 @@ const TopBar = () => {
 
   return (
     <div className={css.topbar}>
-      <h1 className={css.title}>Image Builder</h1>
+      <h1 className={css.title}>IB</h1>
 
-      <div>
-        <button type="button" disabled={!past.length} onClick={undo}>
-          {'<-'}
-        </button>
-        <button type="button" disabled={!future.length} onClick={redo}>
-          {'->'}
-        </button>
-      </div>
-      <button type="button" disabled={!shapeIds.length} onClick={handleExport}>
+      <Button
+        type="button"
+        className={css.exportBtn}
+        disabled={!shapeIds.length}
+        onClick={handleExport}
+      >
         Export to PNG
-      </button>
+      </Button>
     </div>
   );
 };

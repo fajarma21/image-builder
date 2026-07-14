@@ -1,0 +1,32 @@
+.section {
+  > p {
+    margin-bottom: 8px;
+  }
+  &:not(:first-child) {
+    margin-top: 16px;
+  }
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+
+  p {
+    font-size: 0.8rem;
+    min-width: 12px;
+  }
+
+  input {
+    width: 60px;
+    &.full {
+      width: 100%;
+    }
+  }
+
+  button {
+    max-width: 40%;
+  }
+}

@@ -358,7 +358,7 @@ const Viewport = () => {
         case DRAGGING:
         case ROTATING:
         case RESIZING: {
-          console.log('recalculate selection bound');
+          console.log('TODO: recalculate selection bound');
           break;
         }
 
@@ -417,7 +417,7 @@ const Viewport = () => {
           className={css.canvas}
           onMouseDown={handleMouseDownCanvas}
         >
-          <g>
+          {/* <g>
             {[...Array(10)].map(
               (_, index) =>
                 !!index &&
@@ -448,7 +448,7 @@ const Viewport = () => {
                   />
                 ),
             )}
-          </g>
+          </g> */}
 
           {shapesById && (
             <>

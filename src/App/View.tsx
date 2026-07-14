@@ -1,11 +1,13 @@
-import LeftBar from '@/components/LeftBar';
-import RightBar from '@/components/RightBar';
 import TopBar from '@/components/TopBar';
 import Center from '@/components/Center';
 
 import css from './View.module.scss';
 import useEditorStore from '@/stores/useEditorStore';
 import { IDLE } from '@/constants/interaction';
+import Sidebar from '@/components/Sidebar';
+import Items from '@/components/Items';
+import Layers from '@/components/Layers';
+import Properties from '@/components/Properties';
 
 function App() {
   const interaction = useEditorStore((state) => state.interaction);
@@ -16,9 +18,14 @@ function App() {
     >
       <TopBar />
       <div className={css.main}>
-        <LeftBar />
+        <Sidebar>
+          <Items />
+          <Layers />
+        </Sidebar>
         <Center />
-        <RightBar />
+        <Sidebar>
+          <Properties />
+        </Sidebar>
       </div>
     </div>
   );

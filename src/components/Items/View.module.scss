@@ -1,0 +1,42 @@
+.items {
+  --ih: 35vh;
+  height: var(--ih);
+  h3 {
+    color: var(--white-title);
+    line-height: 22px;
+    margin: 0;
+    padding: 24px 16px 16px;
+  }
+}
+
+.content {
+  --gap: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap);
+}
+
+.scrollable {
+  overflow-y: auto;
+  height: calc(var(--ih) - 62px);
+  padding: 0 16px;
+}
+
+.itemBtn {
+  flex-direction: column;
+  text-align: center;
+  width: calc(50% - calc(var(--gap) / 2));
+  height: 100px;
+  border-radius: 8px;
+
+  p {
+    margin: 4px 0 0;
+    font-size: 0.8rem;
+  }
+  svg {
+    flex: none;
+  }
+  &:last-child {
+    margin-bottom: 16px;
+  }
+}

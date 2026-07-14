@@ -95,11 +95,7 @@ interface Document {
   backgroundColor: string;
 }
 
-export interface PushHistory extends EditorSnapshot {
-  past: EditorStore['past'];
-}
-
-export interface StartInteractionParams {
+interface StartInteractionParams {
   type: AllInteractionTypes;
   mouseX?: number;
   mouseY?: number;
@@ -159,10 +155,7 @@ export interface EditorStore extends EditorSnapshot {
   copy: () => void;
   paste: () => void;
 
-  bringToFront: (id: string) => void;
-  bringForward: (id: string) => void;
-  sendToBack: (id: string) => void;
-  sendBackward: (id: string) => void;
+  moveLayer: (order: string) => void;
 
   zooming: (zoom: number) => void;
 

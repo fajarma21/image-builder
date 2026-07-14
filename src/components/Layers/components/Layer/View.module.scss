@@ -1,0 +1,28 @@
+.layer {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 36px;
+  padding: 0 8px;
+  border-radius: 8px;
+
+  &:not(:last-child) {
+    margin-bottom: 4px;
+  }
+
+  &[data-selected] {
+    background-color: #37383d;
+  }
+
+  &:last-child {
+    margin-bottom: 16px;
+  }
+}
+
+.buttonModifier {
+  width: 24px;
+  height: 24px;
+  color: #848484;
+  background-color: transparent;
+}

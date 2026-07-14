@@ -13,11 +13,13 @@ import {
   ROTATING,
 } from '@/constants/interaction';
 import type { Shape } from '@/types/shape';
-import isEmptyObject from '@/utils/isEmptyObject';
 import alignSelection from '@/utils/alignSelection';
+import createSnapshot from '@/utils/createSnapshot';
 import distributeSelection from '@/utils/distributeSelection';
+import isEmptyObject from '@/utils/isEmptyObject';
+import layerOrder from '@/utils/layerOrder';
+import pushHistory from '@/utils/pushHistory';
 
-import { createSnapshot, moveShapeId, pushHistory } from './index.helpers';
 import { DEFAULT_GENERIC_SHAPE, DEFAULT_TEXT_SHAPE } from './index.constants';
 import type { EditorStore } from './index.types';
 
@@ -336,34 +338,11 @@ const useEditorStore = create<EditorStore>((set) => ({
         selectionBounds: null,
       };
     }),
-  bringToFront: (id) =>
-    set((state) => {
-      return {
-        ...pushHistory(state),
-        shapeIds: [...state.shapeIds.filter((item) => item !== id), id],
-      };
-    }),
-  bringForward: (id) =>
-    set((state) => {
-      return {
-        ...pushHistory(state),
-        shapeIds: moveShapeId(state.shapeIds, id, 1),
-      };
-    }),
-  sendToBack: (id) =>
-    set((state) => {
-      return {
-        ...pushHistory(state),
-        shapeIds: [id, ...state.shapeIds.filter((item) => item !== id)],
-      };
-    }),
-  sendBackward: (id) =>
-    set((state) => {
-      return {
-        ...pushHistory(state),
-        shapeIds: moveShapeId(state.shapeIds, id, -1),
-      };
-    }),
+  moveLayer: (order) =>
+    set((state) => ({
+      ...pushHistory(state),
+      shapeIds: layerOrder(order, state.selectedIds[0], state.shapeIds),
+    })),
   zooming: (zoom) =>
     set((state) => ({
       camera: {

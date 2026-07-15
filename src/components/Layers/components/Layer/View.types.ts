@@ -1,8 +1,7 @@
 import type { Shape } from '@/types/shape';
-import type { MouseEvent } from 'react';
+import type { LiHTMLAttributes } from 'react';
 
-export interface LayerProps {
+export interface LayerProps extends LiHTMLAttributes<HTMLLIElement> {
   data: Shape;
   selected: boolean;
-  onClick: (e: MouseEvent<HTMLDivElement>) => void;
 }

@@ -1,0 +1,15 @@
+.inputModifier {
+  all: unset;
+  font-size: 14px;
+  box-sizing: border-box;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid var(--input-outline);
+  background-color: var(--input-bg);
+  transition: border-color 0.2s;
+
+  &:focus,
+  &:focus-visible {
+    border-color: #4a4f5a;
+  }
+}

@@ -8,6 +8,7 @@ import css from './View.module.scss';
 import LayerOrder from './components/LayerOrder';
 import Typography from './components/Typography';
 import Section from './components/Section';
+import TextField from '../TextField';
 
 // TODO: bringToFront, bringForward, sendToBack, sendBackward multiselect support
 
@@ -58,33 +59,30 @@ const Properties = () => {
 
         <Section title="Position">
           <p>X</p>
-          <input type="number" value={x} name="x" onChange={handleChange} />
+          <TextField value={x} name="x" onChange={handleChange} />
           <p>Y</p>
-          <input type="number" value={y} name="y" onChange={handleChange} />
+          <TextField value={y} name="y" onChange={handleChange} />
         </Section>
 
         <Section title="Size">
           <p>W</p>
-          <input
-            type="number"
+          <TextField
             value={width}
             name="width"
-            min={20}
+            min={1}
             onChange={handleChange}
           />
           <p>H</p>
-          <input
-            type="number"
+          <TextField
             value={height}
             name="height"
-            min={20}
+            min={1}
             onChange={handleChange}
           />
         </Section>
         <Section title="Rotation">
           <p />
-          <input
-            type="number"
+          <TextField
             value={rotation}
             name="rotation"
             max={360}

@@ -5,20 +5,20 @@ import Button from '@/components/Button';
 import css from './View.module.scss';
 import type { LayerProps } from './View.types';
 
-const Layer = ({ data, selected, onClick }: LayerProps) => {
+const Layer = ({ data, selected, ...restProps }: LayerProps) => {
   const { name } = data;
 
   return (
-    <div
-      className={css.layer}
+    <li
       data-selected={selected || undefined}
-      onClick={onClick}
+      className={css.layer}
+      {...restProps}
     >
       <Button className={css.buttonModifier}>
         <RiEyeLine />
       </Button>
-      <p>{name}</p>
-    </div>
+      <p className={css.name}>{name}</p>
+    </li>
   );
 };
 

@@ -12,5 +12,7 @@
 .content {
   overflow-y: auto;
   padding: 0 16px;
+  margin: 0;
   height: calc(var(--lh) - 63px);
+  list-style: none;
 }

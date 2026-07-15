@@ -143,7 +143,7 @@ export interface EditorStore extends EditorSnapshot {
   updateSize: (id: string, width: number, height: number) => void;
 
   startInteraction: (data: StartInteractionParams) => void;
-  stopInteraction: (e: globalThis.MouseEvent) => void;
+  stopInteraction: (e?: globalThis.MouseEvent) => void;
 
   pushHistory: (snapshot: EditorSnapshot) => void;
   undo: () => void;

@@ -1,4 +1,4 @@
-import type { MouseEvent } from 'react';
+import { type MouseEvent } from 'react';
 import useEditorStore from '@/stores/useEditorStore';
 
 import Layer from './components/Layer';
@@ -11,7 +11,7 @@ const Layers = () => {
   const selectOnly = useEditorStore((state) => state.selectOnly);
   const toggleSelection = useEditorStore((state) => state.toggleSelection);
 
-  const handleSelect = (e: MouseEvent<HTMLDivElement>, id: string) => {
+  const handleSelect = (e: MouseEvent<HTMLLIElement>, id: string) => {
     e.preventDefault();
     if (e.shiftKey) toggleSelection(id);
     else selectOnly(id);
@@ -20,7 +20,7 @@ const Layers = () => {
   return (
     <div className={css.layers}>
       <h3>Layers</h3>
-      <div className={css.content}>
+      <ul className={css.content}>
         {shapesById &&
           shapeIds
             .map((id) => {
@@ -34,7 +34,7 @@ const Layers = () => {
               );
             })
             .reverse()}
-      </div>
+      </ul>
     </div>
   );
 };

@@ -208,6 +208,7 @@ const useEditorStore = create<EditorStore>((set) => ({
   stopInteraction: (e) =>
     set((state) => {
       if (
+        !e ||
         state.interaction.type === IDLE ||
         state.interaction.type === EDITING_TEXT
       )

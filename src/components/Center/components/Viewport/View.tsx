@@ -268,8 +268,8 @@ const Viewport = () => {
           const localDx = (dx * Math.cos(angle) + dy * Math.sin(angle)) * 2;
           const localDy = (-dx * Math.sin(angle) + dy * Math.cos(angle)) * 2;
 
-          const width = Math.max(20, shape.width + localDx);
-          const height = Math.max(20, shape.height + localDy);
+          const width = Math.max(1, shape.width + localDx);
+          const height = Math.max(1, shape.height + localDy);
 
           updateShape(shape.id, {
             x: interaction.centerX - width / 2,

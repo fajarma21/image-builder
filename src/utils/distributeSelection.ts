@@ -55,7 +55,7 @@ const distributeSelection = (
         x = selection.left + (divider.horizontal * index - shape.width / 2);
         break;
       case DISTRIBUTE_V:
-        y = selection.top + (divider.vertical * index - shape.width / 2);
+        y = selection.top + (divider.vertical * index - shape.height / 2);
         break;
 
       default:

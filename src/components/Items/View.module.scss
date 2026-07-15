@@ -2,10 +2,12 @@
   --ih: 35vh;
   height: var(--ih);
   h3 {
+    text-transform: uppercase;
     color: var(--white-title);
     line-height: 22px;
     margin: 0;
-    padding: 24px 16px 16px;
+    padding: 16px 16px 24px;
+    font-weight: 500;
   }
 }
 
@@ -18,7 +20,7 @@
 
 .scrollable {
   overflow-y: auto;
-  height: calc(var(--ih) - 62px);
+  height: calc(var(--ih) - 70px);
   padding: 0 16px;
 }
 

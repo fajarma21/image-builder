@@ -82,13 +82,7 @@ const Properties = () => {
         </Section>
         <Section title="Rotation">
           <p />
-          <TextField
-            value={rotation}
-            name="rotation"
-            max={360}
-            min={-360}
-            onChange={handleChange}
-          />
+          <TextField value={rotation} name="rotation" onChange={handleChange} />
           <p>&deg;</p>
         </Section>
         <Section title="Fill">

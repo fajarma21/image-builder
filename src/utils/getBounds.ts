@@ -1,15 +1,57 @@
 import type { Shape } from '@/types/shape';
 
-const getBounds = ({ x, y, width, height }: Shape) => {
+function rotatePoint(
+  x: number,
+  y: number,
+  cx: number,
+  cy: number,
+  deg: number,
+) {
+  const translatedX = x - cx;
+  const translatedY = y - cy;
+
+  const angleInRadians = deg * (Math.PI / 180);
+  const cos = Math.cos(angleInRadians);
+  const sin = Math.sin(angleInRadians);
+
+  const rotatedX = translatedX * cos - translatedY * sin;
+  const rotatedY = translatedX * sin + translatedY * cos;
+
   return {
-    top: y,
-    bottom: y + height,
-    left: x,
-    right: x + width,
+    x: rotatedX + cx,
+    y: rotatedY + cy,
+  };
+}
+
+const getBounds = ({ x, y, width, height, rotation }: Shape) => {
+  const cx = x + width / 2;
+  const cy = y + height / 2;
+
+  const tlX = x;
+  const tlY = y;
+  const newTL = rotatePoint(tlX, tlY, cx, cy, rotation);
+
+  const trX = x + width;
+  const trY = y;
+  const newTR = rotatePoint(trX, trY, cx, cy, rotation);
+
+  const blX = x;
+  const blY = y + height;
+  const newBL = rotatePoint(blX, blY, cx, cy, rotation);
+
+  const brX = x + width;
+  const brY = y + height;
+  const newBR = rotatePoint(brX, brY, cx, cy, rotation);
+
+  return {
+    top: Math.min(newTL.y, newTR.y, newBL.y, newBR.y),
+    bottom: Math.max(newTL.y, newTR.y, newBL.y, newBR.y),
+    left: Math.min(newTL.x, newTR.x, newBL.x, newBR.x),
+    right: Math.max(newTL.x, newTR.x, newBL.x, newBR.x),
     width,
     height,
-    centerX: x + width / 2,
-    centerY: y + height / 2,
+    centerX: cx,
+    centerY: cy,
   };
 };
 

@@ -1,6 +1,9 @@
 import type { Bounds } from '@/types';
+import type { Shape } from '@/types/shape';
 
-const getSelectionBounds = (a: Bounds, b: Bounds | null) => {
+import getBounds from './getBounds';
+
+const getSelection = (a: Bounds, b: Bounds | null) => {
   const normalized = b || {
     top: Infinity,
     bottom: -Infinity,
@@ -26,6 +29,24 @@ const getSelectionBounds = (a: Bounds, b: Bounds | null) => {
     centerX: left + width / 2,
     centerY: top + height / 2,
   };
+};
+
+const getSelectionBounds = (
+  ids: string[],
+  shapesById: Record<string, Shape> | null,
+) => {
+  if (!shapesById || ids.length <= 1) return null;
+
+  let tempSelectionBounds: Bounds | null = null;
+
+  for (const id of ids) {
+    const shape = shapesById[id];
+    const shapeBounds = getBounds(shape);
+
+    tempSelectionBounds = getSelection(shapeBounds, tempSelectionBounds);
+  }
+
+  return tempSelectionBounds;
 };
 
 export default getSelectionBounds;

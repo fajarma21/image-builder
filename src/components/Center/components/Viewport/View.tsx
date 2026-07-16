@@ -5,6 +5,7 @@ import MarqueeRect from '@/components/MarqueeRect';
 import ShapeRenderer from '@/components/ShapeRenderer';
 import ShapeWrapper from '@/components/ShapeWrapper';
 import { MAX_ZOOM } from '@/constants';
+import { COLOR_OUTLINE } from '@/constants/colors';
 import {
   DRAGGING,
   EDITING_TEXT,
@@ -19,16 +20,15 @@ import {
 import useEditorStore from '@/stores/useEditorStore';
 import useKeyboardStore from '@/stores/useKeyboardStore';
 import getBounds from '@/utils/getBounds';
-import getSelectionBounds from '@/utils/getSelectionBounds';
 import intersects from '@/utils/intersects';
 import isTextEditing from '@/utils/isTextEditing';
 import normalizeRect from '@/utils/normalizeRect';
+import radToDeg from '@/utils/radToDeg';
 import viewportToCanvas from '@/utils/viewportToCanvas';
 
 import Info from './components/Info';
 import { ARROW_VALUES } from './View.constants';
 import css from './View.module.scss';
-import type { Bounds } from '@/types';
 
 // TODO: resize and rotate multiselect support
 // TODO: apply viewporttocanvas helper for all coordinates
@@ -61,9 +61,6 @@ const Viewport = () => {
   const toggleSpace = useKeyboardStore((state) => state.toggleSpace);
   const zooming = useEditorStore((state) => state.zooming);
   const marquee = useEditorStore((state) => state.marquee);
-  const updateSelectionBounds = useEditorStore(
-    (state) => state.updateSelectionBounds,
-  );
 
   const viewportRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
@@ -286,12 +283,12 @@ const Viewport = () => {
           const svgMouseX = Math.max(e.clientX - svgRect.left, 0) / camera.zoom;
           const svgMouseY = Math.max(e.clientY - svgRect.top, 0) / camera.zoom;
 
-          const angle = Math.atan2(
+          const radian = Math.atan2(
             svgMouseY - interaction.centerY,
             svgMouseX - interaction.centerX,
           );
 
-          const degrees = (angle * 180) / Math.PI;
+          const degrees = radToDeg(radian);
 
           updateShape(interaction.startShapes[0].id, {
             rotation: degrees + 90,
@@ -333,32 +330,16 @@ const Viewport = () => {
       switch (interaction.type) {
         case MARQUEE: {
           const marquee = normalizeRect(interaction);
-
           const ids: string[] = [];
-          let tempSelectionBounds: Bounds | null = null;
 
           for (const shapeId of shapeIds) {
             const shape = shapesById![shapeId];
             const shapeBounds = getBounds(shape);
 
-            if (intersects(shapeBounds, marquee)) {
-              ids.push(shapeId);
-              tempSelectionBounds = getSelectionBounds(
-                shapeBounds,
-                tempSelectionBounds,
-              );
-            }
+            if (intersects(shapeBounds, marquee)) ids.push(shapeId);
           }
+          selectMultiple(ids);
 
-          if (tempSelectionBounds) updateSelectionBounds(tempSelectionBounds);
-          if (ids.length) selectMultiple(ids);
-          break;
-        }
-
-        case DRAGGING:
-        case ROTATING:
-        case RESIZING: {
-          console.log('TODO: recalculate selection bound');
           break;
         }
 
@@ -368,14 +349,7 @@ const Viewport = () => {
 
       stopInteraction(e);
     },
-    [
-      interaction,
-      selectMultiple,
-      shapeIds,
-      shapesById,
-      stopInteraction,
-      updateSelectionBounds,
-    ],
+    [interaction, selectMultiple, shapeIds, shapesById, stopInteraction],
   );
 
   useEffect(() => {
@@ -417,6 +391,7 @@ const Viewport = () => {
           className={css.canvas}
           onMouseDown={handleMouseDownCanvas}
         >
+          {/* GRID */}
           {/* <g>
             {[...Array(10)].map(
               (_, index) =>
@@ -482,7 +457,7 @@ const Viewport = () => {
                 width={selectionBounds.right - selectionBounds.left}
                 height={selectionBounds.bottom - selectionBounds.top}
                 fill="none"
-                stroke="red"
+                stroke={COLOR_OUTLINE}
               />
             </g>
           )}

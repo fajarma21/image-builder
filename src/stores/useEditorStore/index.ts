@@ -16,6 +16,7 @@ import type { Shape } from '@/types/shape';
 import alignSelection from '@/utils/alignSelection';
 import createSnapshot from '@/utils/createSnapshot';
 import distributeSelection from '@/utils/distributeSelection';
+import getSelectionBounds from '@/utils/getSelectionBounds';
 import isEmptyObject from '@/utils/isEmptyObject';
 import layerOrder from '@/utils/layerOrder';
 import pushHistory from '@/utils/pushHistory';
@@ -91,16 +92,26 @@ const useEditorStore = create<EditorStore>((set) => ({
       };
     }),
   selectOnly: (id) => set(() => ({ selectedIds: [id], selectionBounds: null })),
-  selectMultiple: (ids) => set(() => ({ selectedIds: ids })),
-  toggleSelection: (id) =>
+  selectMultiple: (ids) =>
     set((state) => ({
-      selectedIds: state.selectedIds.includes(id)
-        ? state.selectedIds.filter((item) => item !== id)
-        : [...state.selectedIds, id],
-      selectionBounds: null,
+      selectedIds: ids,
+      selectionBounds: getSelectionBounds(ids, state.shapesById),
     })),
+  toggleSelection: (id) =>
+    set((state) => {
+      const selectedIds = state.selectedIds.includes(id)
+        ? state.selectedIds.filter((item) => item !== id)
+        : [...state.selectedIds, id];
+      return {
+        selectedIds,
+        selectionBounds: getSelectionBounds(selectedIds, state.shapesById),
+      };
+    }),
   selectAll: () =>
-    set((state) => ({ selectedIds: state.shapeIds, selectionBounds: null })),
+    set((state) => ({
+      selectedIds: state.shapeIds,
+      selectionBounds: getSelectionBounds(state.shapeIds, state.shapesById),
+    })),
   clearSelection: () => set(() => ({ selectedIds: [], selectionBounds: null })),
   deleteSelected: () =>
     set((state) => {
@@ -230,7 +241,12 @@ const useEditorStore = create<EditorStore>((set) => ({
         });
       }
 
-      return { ...history, interaction: { type: IDLE } };
+      let selectionBounds = state.selectionBounds;
+      if (state.interaction.type === DRAGGING && selectionBounds) {
+        selectionBounds = getSelectionBounds(state.shapeIds, state.shapesById);
+      }
+
+      return { ...history, interaction: { type: IDLE }, selectionBounds };
     }),
   pushHistory: (snapshot) =>
     set((state) => {
@@ -301,7 +317,7 @@ const useEditorStore = create<EditorStore>((set) => ({
         },
         shapeIds: [...state.shapeIds, ...newIds],
         selectedIds: newIds,
-        selectionBounds: null,
+        selectionBounds: getSelectionBounds(newIds, state.shapesById),
       };
     }),
   copy: () =>
@@ -336,7 +352,7 @@ const useEditorStore = create<EditorStore>((set) => ({
         },
         shapeIds: [...state.shapeIds, ...newIds],
         selectedIds: newIds,
-        selectionBounds: null,
+        selectionBounds: getSelectionBounds(newIds, state.shapesById),
       };
     }),
   moveLayer: (order) =>
@@ -359,7 +375,6 @@ const useEditorStore = create<EditorStore>((set) => ({
         currentMouseY: newY,
       },
     })),
-  updateSelectionBounds: (selectionBounds) => set(() => ({ selectionBounds })),
   align: (alignment: string) =>
     set((state) => {
       return {

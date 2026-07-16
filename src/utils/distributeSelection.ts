@@ -1,4 +1,4 @@
-import { DISTRIBUTE_H, DISTRIBUTE_V } from '@/constants';
+import { DISTRIBUTE_H } from '@/constants';
 import type { Bounds } from '@/types';
 import type { Shape } from '@/types/shape';
 
@@ -35,31 +35,32 @@ const distributeSelection = (
 ) => {
   if (!shapesById || !selectionBounds) return;
 
+  const sortedIds = [...shapeIds].sort((a, b) => {
+    if (distribution === DISTRIBUTE_H) {
+      return shapesById[a].x - shapesById[b].x;
+    }
+    return shapesById[a].y - shapesById[b].y;
+  });
+
   const updatedShapes: Record<string, Shape> = {};
 
   const { selection, divider } = getDistributeSelection(
-    shapeIds,
+    sortedIds,
     shapesById,
     selectionBounds,
   );
 
-  for (let index = 0; index < shapeIds.length; index++) {
-    const id = shapeIds[index];
+  for (let index = 0; index < sortedIds.length; index++) {
+    const id = sortedIds[index];
     const shape = shapesById[id];
 
     let x = shape.x;
     let y = shape.y;
 
-    switch (distribution) {
-      case DISTRIBUTE_H:
-        x = selection.left + (divider.horizontal * index - shape.width / 2);
-        break;
-      case DISTRIBUTE_V:
-        y = selection.top + (divider.vertical * index - shape.height / 2);
-        break;
-
-      default:
-        break;
+    if (distribution === DISTRIBUTE_H) {
+      x = selection.left + (divider.horizontal * index - shape.width / 2);
+    } else {
+      y = selection.top + (divider.vertical * index - shape.height / 2);
     }
 
     updatedShapes[id] = {

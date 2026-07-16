@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-import { SHAPE_IMAGE, SHAPE_TEXT } from '@/constants';
+import { SHAPE_IMAGE, SHAPE_TEXT, TARGET_SELECTION } from '@/constants';
 import {
   DRAGGING,
   EDITING_TEXT,
@@ -22,6 +22,7 @@ import layerOrder from '@/utils/layerOrder';
 import pushHistory from '@/utils/pushHistory';
 
 import { DEFAULT_GENERIC_SHAPE, DEFAULT_TEXT_SHAPE } from './index.constants';
+import { getCanvasBounds } from './index.helpers';
 import type { EditorStore } from './index.types';
 
 const useEditorStore = create<EditorStore>((set) => ({
@@ -381,7 +382,7 @@ const useEditorStore = create<EditorStore>((set) => ({
         currentMouseY: newY,
       },
     })),
-  align: (alignment: string) =>
+  align: (alignment, target) =>
     set((state) => {
       const shapesById = {
         ...state.shapesById,
@@ -389,7 +390,9 @@ const useEditorStore = create<EditorStore>((set) => ({
           alignment,
           state.selectedIds,
           state.shapesById,
-          state.selectionBounds,
+          target === TARGET_SELECTION
+            ? state.selectionBounds
+            : getCanvasBounds(state.document),
         ),
       };
       return {
@@ -398,7 +401,7 @@ const useEditorStore = create<EditorStore>((set) => ({
         selectionBounds: getSelectionBounds(state.selectedIds, shapesById),
       };
     }),
-  distribute: (distribution: string) =>
+  distribute: (distribution, target) =>
     set((state) => {
       const shapesById = {
         ...state.shapesById,
@@ -406,7 +409,9 @@ const useEditorStore = create<EditorStore>((set) => ({
           distribution,
           state.selectedIds,
           state.shapesById,
-          state.selectionBounds,
+          target === TARGET_SELECTION
+            ? state.selectionBounds
+            : getCanvasBounds(state.document),
         ),
       };
       return {

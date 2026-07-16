@@ -17,6 +17,8 @@ import {
   ALIGN_TOP,
   DISTRIBUTE_H,
   DISTRIBUTE_V,
+  TARGET_CANVAS,
+  TARGET_SELECTION,
 } from '@/constants';
 
 export const ALIGN_H_LIST = [
@@ -65,5 +67,16 @@ export const DISTRIBUTE_LIST = [
     title: 'Distribute vertical',
     value: DISTRIBUTE_V,
     icon: <RiLayoutHorizontalLine />,
+  },
+];
+
+export const TARGET_LIST = [
+  {
+    text: 'Selection',
+    value: TARGET_SELECTION,
+  },
+  {
+    text: 'Canvas',
+    value: TARGET_CANVAS,
   },
 ];

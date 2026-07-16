@@ -27,7 +27,6 @@ import normalizeRect from '@/utils/normalizeRect';
 import radToDeg from '@/utils/radToDeg';
 import viewportToCanvas from '@/utils/viewportToCanvas';
 
-import Info from './components/Info';
 import { ARROW_VALUES } from './View.constants';
 import css from './View.module.scss';
 
@@ -192,6 +191,8 @@ const Viewport = () => {
         scrollX: viewportRef.current.scrollLeft,
         scrollY: viewportRef.current.scrollTop,
       });
+    } else if (e.target === viewportRef.current) {
+      clearSelection();
     }
   };
 
@@ -385,7 +386,6 @@ const Viewport = () => {
         className={css.wrapper}
         style={{ width: document.width * camera.zoom }}
       >
-        <Info />
         <svg
           id="canvas"
           ref={svgRef}

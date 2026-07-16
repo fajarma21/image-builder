@@ -2,7 +2,7 @@ import type { EditorSnapshot, Shape, ShapeType } from '@/types/shape';
 import type { Bounds, Camera } from '@/types';
 import type { interaction, StartInteractionParams } from '@/types/interaction';
 
-interface Document {
+export interface Document {
   width: number;
   height: number;
   backgroundColor: string;
@@ -62,6 +62,6 @@ export interface EditorStore extends EditorSnapshot {
 
   marquee: (newX: number, newY: number) => void;
 
-  align: (alignment: string) => void;
-  distribute: (distribution: string) => void;
+  align: (alignment: string, target: string) => void;
+  distribute: (distribution: string, target: string) => void;
 }

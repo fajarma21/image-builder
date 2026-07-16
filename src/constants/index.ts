@@ -16,6 +16,9 @@ export const ALIGN_BOTTOM = 'ALIGN_BOTTOM';
 export const DISTRIBUTE_H = 'DISTRIBUTE_H';
 export const DISTRIBUTE_V = 'DISTRIBUTE_V';
 
+export const TARGET_SELECTION = 'selection';
+export const TARGET_CANVAS = 'canvas';
+
 export const ORDER_TO_FRONT = 'BRING_TO_FRONT';
 export const ORDER_FORWARD = 'BRING_FORWARD';
 export const ORDER_TO_BACK = 'SEND_TO_BACK';

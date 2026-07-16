@@ -2,6 +2,11 @@ import type { SVGAttributes } from 'react';
 
 import type { Shape, SupportedSVG } from './shape';
 
+export interface SelectOption {
+  text: string;
+  value: string;
+}
+
 export interface ShapeComponent extends SVGAttributes<SupportedSVG> {
   shape: Shape;
 }

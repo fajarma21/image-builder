@@ -8,7 +8,7 @@ import { EDITING_TEXT } from '@/constants/interaction';
 import InputText from './components/InputText';
 
 const Text = ({ shape, ...actionProps }: TextProps) => {
-  const { id, x, y, fontSize, fill, stroke, text } = shape;
+  const { id, x, y, fill, stroke, text, fontSize, fontFamily } = shape;
 
   const selectedIds = useEditorStore((state) => state.selectedIds);
   const interaction = useEditorStore((state) => state.interaction);
@@ -35,6 +35,7 @@ const Text = ({ shape, ...actionProps }: TextProps) => {
         x={x}
         y={y}
         fontSize={fontSize}
+        fontFamily={fontFamily}
         fill={fill}
         stroke={stroke}
         paintOrder="stroke fill"

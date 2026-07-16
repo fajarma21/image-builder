@@ -74,13 +74,7 @@ const ShapeControl = ({ shape }: ShapeControlProps) => {
       />
 
       {/* CENTER */}
-      <circle
-        cx={centerX}
-        cy={centerY}
-        r={1 / zoom}
-        {...outlineProps}
-        fill={COLOR_OUTLINE}
-      />
+      <circle cx={centerX} cy={centerY} r={1 / zoom} fill={COLOR_OUTLINE} />
     </>
   );
 };

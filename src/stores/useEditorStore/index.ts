@@ -29,6 +29,12 @@ const useEditorStore = create<EditorStore>((set) => ({
     width: 800,
     height: 600,
     backgroundColor: '#ffffff',
+    grid: {
+      show: false,
+      horizontal: 100,
+      vertical: 100,
+      snap: false,
+    },
   },
   camera: {
     zoom: 1,
@@ -377,32 +383,36 @@ const useEditorStore = create<EditorStore>((set) => ({
     })),
   align: (alignment: string) =>
     set((state) => {
+      const shapesById = {
+        ...state.shapesById,
+        ...alignSelection(
+          alignment,
+          state.selectedIds,
+          state.shapesById,
+          state.selectionBounds,
+        ),
+      };
       return {
         ...pushHistory(state),
-        shapesById: {
-          ...state.shapesById,
-          ...alignSelection(
-            alignment,
-            state.selectedIds,
-            state.shapesById,
-            state.selectionBounds,
-          ),
-        },
+        shapesById,
+        selectionBounds: getSelectionBounds(state.selectedIds, shapesById),
       };
     }),
   distribute: (distribution: string) =>
     set((state) => {
+      const shapesById = {
+        ...state.shapesById,
+        ...distributeSelection(
+          distribution,
+          state.selectedIds,
+          state.shapesById,
+          state.selectionBounds,
+        ),
+      };
       return {
         ...pushHistory(state),
-        shapesById: {
-          ...state.shapesById,
-          ...distributeSelection(
-            distribution,
-            state.selectedIds,
-            state.shapesById,
-            state.selectionBounds,
-          ),
-        },
+        shapesById,
+        selectionBounds: getSelectionBounds(state.selectedIds, shapesById),
       };
     }),
 }));

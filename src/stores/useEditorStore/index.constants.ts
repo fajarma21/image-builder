@@ -8,8 +8,8 @@ const DEFAULT_SHAPE = {
 
 export const DEFAULT_GENERIC_SHAPE = {
   ...DEFAULT_SHAPE,
-  width: 120,
-  height: 120,
+  width: 100,
+  height: 100,
 };
 
 export const DEFAULT_TEXT_SHAPE = {
@@ -18,4 +18,5 @@ export const DEFAULT_TEXT_SHAPE = {
   height: 0,
   text: 'Text',
   fontSize: 24,
+  fontFamily: 'system-ui',
 };

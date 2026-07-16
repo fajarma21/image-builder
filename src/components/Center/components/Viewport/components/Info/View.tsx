@@ -11,7 +11,7 @@ const Info = () => {
       <p>
         Canvas &mdash; {document.width}x{document.height} px
       </p>
-      <p>Zoom {camera.zoom.toFixed(1)}x</p>
+      <p>Zoom {camera.zoom.toFixed(2)}x</p>
     </div>
   );
 };

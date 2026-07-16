@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useRef, type MouseEvent } from 'react';
 import { flushSync } from 'react-dom';
 
+import Grid from '@/components/Grid';
 import MarqueeRect from '@/components/MarqueeRect';
+import SelectionBox from '@/components/SelectionBox';
 import ShapeRenderer from '@/components/ShapeRenderer';
 import ShapeWrapper from '@/components/ShapeWrapper';
-import { MAX_ZOOM } from '@/constants';
-import { COLOR_OUTLINE } from '@/constants/colors';
+import { MAX_ZOOM, MIN_ZOOM } from '@/constants';
 import {
   DRAGGING,
   EDITING_TEXT,
@@ -203,7 +204,10 @@ const Viewport = () => {
 
         const oldZoom = camera.zoom;
         const currentZoom = e.deltaY * -0.01;
-        const newZoom = Math.max(1, Math.min(oldZoom + currentZoom, MAX_ZOOM));
+        const newZoom = Math.max(
+          MIN_ZOOM,
+          Math.min(oldZoom + currentZoom, MAX_ZOOM),
+        );
 
         const viewportRect = viewportRef.current.getBoundingClientRect();
 
@@ -391,39 +395,7 @@ const Viewport = () => {
           className={css.canvas}
           onMouseDown={handleMouseDownCanvas}
         >
-          {/* GRID */}
-          {/* <g>
-            {[...Array(10)].map(
-              (_, index) =>
-                !!index &&
-                index !== 9 && (
-                  <line
-                    key={index}
-                    x1={(document.width / 9) * index}
-                    y1={0}
-                    x2={(document.width / 9) * index}
-                    y2={document.height}
-                    stroke="#000000"
-                    strokeWidth={1}
-                  />
-                ),
-            )}
-            {[...Array(10)].map(
-              (_, index) =>
-                !!index &&
-                index !== 9 && (
-                  <line
-                    key={index}
-                    x1={0}
-                    y1={(document.height / 9) * index}
-                    x2={document.width}
-                    y2={(document.height / 9) * index}
-                    stroke="#000000"
-                    strokeWidth={1}
-                  />
-                ),
-            )}
-          </g> */}
+          {document.grid.show && <Grid />}
 
           {shapesById && (
             <>
@@ -445,21 +417,7 @@ const Viewport = () => {
           )}
 
           {selectionBounds && interaction.type === IDLE && (
-            <g>
-              <circle
-                cx={selectionBounds.centerX}
-                cy={selectionBounds.centerY}
-                r={2}
-              />
-              <rect
-                x={selectionBounds.left}
-                y={selectionBounds.top}
-                width={selectionBounds.right - selectionBounds.left}
-                height={selectionBounds.bottom - selectionBounds.top}
-                fill="none"
-                stroke={COLOR_OUTLINE}
-              />
-            </g>
+            <SelectionBox {...selectionBounds} />
           )}
 
           <MarqueeRect />

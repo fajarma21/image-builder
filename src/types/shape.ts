@@ -30,6 +30,7 @@ export interface Shape {
   stroke: string;
   text?: string;
   fontSize?: string;
+  fontFamily?: string;
   imageSrc?: string;
 }
 

@@ -3,6 +3,7 @@ export const SHAPE_ELLIPSE = 'ellipse';
 export const SHAPE_TEXT = 'text';
 export const SHAPE_IMAGE = 'image';
 
+export const MIN_ZOOM = 0.3;
 export const MAX_ZOOM = 3;
 
 export const ALIGN_LEFT = 'ALIGN_LEFT';

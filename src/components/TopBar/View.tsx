@@ -3,6 +3,7 @@ import useEditorStore from '@/stores/useEditorStore';
 
 import Button from '../Button';
 import css from './View.module.scss';
+import DocumentSetting from './components/DocumentSetting';
 
 const TopBar = () => {
   const document = useEditorStore((state) => state.document);
@@ -14,7 +15,12 @@ const TopBar = () => {
 
   return (
     <div className={css.topbar}>
-      <h1 className={css.title}>IB</h1>
+      <div className={css.leftSide}>
+        <div className={css.titleWrapper}>
+          <h1 className={css.title}>IB</h1>
+        </div>
+        <DocumentSetting />
+      </div>
 
       <Button
         type="button"

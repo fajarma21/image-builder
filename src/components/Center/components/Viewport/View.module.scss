@@ -10,11 +10,11 @@
 }
 
 .canvas {
-  overflow: unset;
+  overflow: visible;
   display: block;
   margin: 0 auto;
   transform-origin: top left;
   border-radius: 4px;
-  border: 1px solid var(--color-canvas-outline);
+  border: 1px solid #c4c4c4;
   background-color: #fff;
 }

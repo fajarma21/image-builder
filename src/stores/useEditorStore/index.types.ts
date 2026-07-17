@@ -1,18 +1,7 @@
-import type { EditorSnapshot, Shape, ShapeType } from '@/types/shape';
 import type { Bounds, Camera } from '@/types';
+import type { EditorSnapshot, Shape, ShapeType } from '@/types/shape';
+import type { Document } from '@/types/document';
 import type { interaction, StartInteractionParams } from '@/types/interaction';
-
-export interface Document {
-  width: number;
-  height: number;
-  backgroundColor: string;
-  grid: {
-    show: boolean;
-    horizontal: number;
-    vertical: number;
-    snap: boolean;
-  };
-}
 
 export interface EditorStore extends EditorSnapshot {
   camera: Camera;
@@ -25,6 +14,8 @@ export interface EditorStore extends EditorSnapshot {
   future: EditorSnapshot[];
   clipboard: Shape[];
   selectionBounds: Bounds | null;
+
+  updateDocument: (document: Partial<Document>) => void;
 
   addShape: (shape: ShapeType) => void;
   addImage: (

@@ -8,7 +8,12 @@ const Typography = ({ shape, onChange }: TypographyProps) => {
   return (
     <Section title="Typography">
       <p />
-      <TextField value={fontSize} name="fontSize" onChange={onChange} />
+      <TextField
+        type="number"
+        value={fontSize}
+        name="fontSize"
+        onChange={onChange}
+      />
     </Section>
   );
 };

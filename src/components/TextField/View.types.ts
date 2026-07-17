@@ -1,3 +1,5 @@
 import type { InputHTMLAttributes } from 'react';
 
-export type TextFieldProps = InputHTMLAttributes<HTMLInputElement>;
+export interface TextFieldProps extends InputHTMLAttributes<HTMLInputElement> {
+  type?: 'text' | 'number';
+}

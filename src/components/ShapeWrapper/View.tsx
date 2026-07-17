@@ -18,7 +18,7 @@ const ShapeWrapper = () => {
   return (
     <g data-export="exclude">
       {/* SINGLE BOUNDING BOX */}
-      {isSingleSelect && shape && (
+      {isSingleSelect && shape && shape.show && (
         <rect
           x={shape.x}
           y={shape.y}
@@ -36,11 +36,12 @@ const ShapeWrapper = () => {
         <>
           {/* SELECTED */}
           {!!shapesById &&
-            selectedIds.map((id) => (
-              <ShapeOutline key={id} shape={shapesById[id]} />
-            ))}
+            selectedIds.map((id) => {
+              const shape = shapesById[id];
+              return shape.show && <ShapeOutline key={id} shape={shape} />;
+            })}
 
-          {isSingleSelect && shape && (
+          {isSingleSelect && shape && shape.show && (
             <g transform={transformValue} data-control>
               <ShapeControl shape={shape} />
             </g>

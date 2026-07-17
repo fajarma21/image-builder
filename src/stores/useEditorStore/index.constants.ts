@@ -1,4 +1,5 @@
 const DEFAULT_SHAPE = {
+  show: true,
   x: 0,
   y: 0,
   fill: '#ffdd61',

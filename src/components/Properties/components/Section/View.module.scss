@@ -15,13 +15,14 @@
   flex-wrap: wrap;
 
   p {
+    opacity: 0.7;
     font-size: 0.8rem;
     min-width: 12px;
   }
 
   input {
     width: 60px;
-    &.full {
+    &:global(.full) {
       width: 100%;
     }
   }

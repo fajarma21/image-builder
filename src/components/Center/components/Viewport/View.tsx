@@ -128,7 +128,7 @@ const Viewport = () => {
           const multiplier = shiftKey ? 10 : 1;
           const { x, y } = ARROW_VALUES[key];
           for (const id of selectedIds)
-            moveShape(id, x * multiplier, y * multiplier);
+            moveShape(id, x * multiplier, y * multiplier); // TODO: change to batch update
         }
 
         // DUPLICATE
@@ -392,7 +392,9 @@ const Viewport = () => {
           width={document.width * camera.zoom}
           height={document.height * camera.zoom}
           viewBox={`0 0 ${document.width} ${document.height}`}
+          overflow="visible"
           className={css.canvas}
+          style={{ backgroundColor: document.backgroundColor }}
           onMouseDown={handleMouseDownCanvas}
         >
           {document.grid.show && <Grid />}
@@ -402,7 +404,8 @@ const Viewport = () => {
               {shapeIds.map((id) => {
                 const item = shapesById[id];
                 return (
-                  !!item && (
+                  !!item &&
+                  item.show && (
                     <ShapeRenderer
                       key={id}
                       shape={item}

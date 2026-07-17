@@ -1,0 +1,26 @@
+.dialogModifier {
+  width: auto;
+  min-width: 200px;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 12px 0 rgb(17 17 17 / 50%);
+  color: var(--white-text);
+  background-color: var(--dark-bg);
+}
+
+.btnContainer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  padding-top: 16px;
+}
+
+.btnModifier {
+  width: 100px;
+
+  &[data-cancel] {
+    background-color: transparent;
+    border: 1px solid var(--dark-gray);
+  }
+}

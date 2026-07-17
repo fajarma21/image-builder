@@ -21,6 +21,7 @@ export interface Shape {
   id: string;
   type: ShapeType;
   name: string;
+  show: boolean;
   x: number;
   y: number;
   width: number;

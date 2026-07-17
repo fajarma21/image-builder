@@ -1,0 +1,33 @@
+@use '@/styles/components' as components;
+
+.container {
+  width: 300px;
+  font-size: 14px;
+}
+
+.inputField {
+  p {
+    opacity: 0.7;
+    margin: 0 0 8px 8px;
+  }
+}
+
+.row {
+  margin-bottom: 16px;
+}
+
+.twoCollumn {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 16px;
+  p {
+    margin: 0;
+  }
+}
+
+.inputGroup {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}

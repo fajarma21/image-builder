@@ -3,7 +3,6 @@ import type { ChangeEvent } from 'react';
 import useHistoryDebounce from '@/hooks/useHistoryDebounce';
 import useEditorStore from '@/stores/useEditorStore';
 
-import { valueChecker } from './View.helpers';
 import css from './View.module.scss';
 import LayerOrder from './components/LayerOrder';
 import Typography from './components/Typography';
@@ -25,32 +24,35 @@ const Properties = () => {
   const shapeData = shapesById[selectedId];
 
   if (!shapeData) return null;
-  const { x, y, width, height, rotation, fill, stroke, text } = shapeData;
+  const { name, x, y, width, height, rotation, fill, stroke, text } = shapeData;
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const target = e.target;
     const name = target.name;
-    const value = target.value;
-    const type = target.dataset.type;
+    const type = target.type;
 
-    let data: Record<string, unknown> = { [name]: value };
-    if (!type) {
-      const num = Number(value);
-      if (Number.isNaN(num)) return;
-
-      const min = Number(target.min) || undefined;
-      const max = Number(target.max) || undefined;
-      data = { [name]: valueChecker(num, min, max) };
-    }
+    let value: number | string = target.value;
+    if (type === 'number') value = Number(value);
 
     handlePushHistory();
-    updateShape(selectedId, data);
+    updateShape(selectedId, { [name]: value });
   };
 
   return (
     <div className={css.properties}>
       <h3>Properties</h3>
       <div className={css.content}>
+        <Section>
+          <TextField
+            className="full"
+            value={name}
+            name="name"
+            placeholder="Shape name"
+            maxLength={24}
+            onChange={handleChange}
+          />
+        </Section>
+
         <LayerOrder />
 
         {text !== undefined && (
@@ -59,14 +61,15 @@ const Properties = () => {
 
         <Section title="Position">
           <p>X</p>
-          <TextField value={x} name="x" onChange={handleChange} />
+          <TextField type="number" value={x} name="x" onChange={handleChange} />
           <p>Y</p>
-          <TextField value={y} name="y" onChange={handleChange} />
+          <TextField type="number" value={y} name="y" onChange={handleChange} />
         </Section>
 
         <Section title="Size">
           <p>W</p>
           <TextField
+            type="number"
             value={width}
             name="width"
             min={1}
@@ -74,6 +77,7 @@ const Properties = () => {
           />
           <p>H</p>
           <TextField
+            type="number"
             value={height}
             name="height"
             min={1}
@@ -82,7 +86,12 @@ const Properties = () => {
         </Section>
         <Section title="Rotation">
           <p />
-          <TextField value={rotation} name="rotation" onChange={handleChange} />
+          <TextField
+            type="number"
+            value={rotation}
+            name="rotation"
+            onChange={handleChange}
+          />
           <p>&deg;</p>
         </Section>
         <Section title="Fill">

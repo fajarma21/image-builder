@@ -27,9 +27,10 @@ import type { EditorStore } from './index.types';
 
 const useEditorStore = create<EditorStore>((set) => ({
   document: {
+    name: 'untitled project',
     width: 800,
     height: 600,
-    backgroundColor: '#ffffff',
+    backgroundColor: 'none',
     grid: {
       show: false,
       horizontal: 100,
@@ -49,6 +50,8 @@ const useEditorStore = create<EditorStore>((set) => ({
   future: [],
   clipboard: [],
   selectionBounds: null,
+  updateDocument: (document) =>
+    set((state) => ({ document: { ...state.document, ...document } })),
   addShape: (shape) =>
     set((state) => {
       const id = Date.now().toString();
@@ -115,10 +118,15 @@ const useEditorStore = create<EditorStore>((set) => ({
       };
     }),
   selectAll: () =>
-    set((state) => ({
-      selectedIds: state.shapeIds,
-      selectionBounds: getSelectionBounds(state.shapeIds, state.shapesById),
-    })),
+    set((state) => {
+      const selectedIds = state.shapeIds.filter(
+        (item) => state.shapesById![item].show,
+      );
+      return {
+        selectedIds,
+        selectionBounds: getSelectionBounds(selectedIds, state.shapesById),
+      };
+    }),
   clearSelection: () => set(() => ({ selectedIds: [], selectionBounds: null })),
   deleteSelected: () =>
     set((state) => {

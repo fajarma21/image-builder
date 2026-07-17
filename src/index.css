@@ -1,5 +1,5 @@
 :root {
-  --darkBg: #202427;
+  --dark-bg: #202427;
   --text: #202427;
   --shadow:
     rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
@@ -18,7 +18,7 @@
     sans-serif;
   letter-spacing: 0.18px;
   color: var(--text);
-  background: var(--darkBg);
+  background: var(--dark-bg);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;

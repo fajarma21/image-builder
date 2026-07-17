@@ -1,0 +1,14 @@
+@use '@/styles/components' as components;
+
+.projectData {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  padding-left: 16px;
+  border-left: 1px dashed var(--dark-border);
+}
+
+.editButton {
+  background-color: transparent;
+}

@@ -4,7 +4,6 @@ const DEFAULT_SHAPE = {
   y: 0,
   fill: '#ffdd61',
   rotation: 0,
-  stroke: 'none',
 };
 
 export const DEFAULT_GENERIC_SHAPE = {

@@ -1,7 +1,8 @@
 import { useState, type ChangeEvent } from 'react';
 
 import Dialog from '@/components/Dialog';
-import TextField from '@/components/TextField';
+import Input from '@/components/Inputs/Input';
+import InputNumber from '@/components/Inputs/InputNumber';
 import useEditorStore from '@/stores/useEditorStore';
 import type { Document } from '@/types/document';
 
@@ -39,11 +40,10 @@ const ProjectDialog = ({ display, onClose }: ProjectDiaogProps) => {
         <div className={css.row}>
           <div className={css.inputField}>
             <p>Project Title</p>
-            <TextField
+            <Input
               value={data.name}
               name="name"
               placeholder="Project Title"
-              autoComplete="false"
               onChange={handleChangeData}
             />
           </div>
@@ -52,8 +52,7 @@ const ProjectDialog = ({ display, onClose }: ProjectDiaogProps) => {
           <div className={css.inputField}>
             <p>Width</p>
             <div className={css.inputGroup}>
-              <TextField
-                type="number"
+              <InputNumber
                 value={data.width}
                 name="width"
                 placeholder="Width"
@@ -65,8 +64,7 @@ const ProjectDialog = ({ display, onClose }: ProjectDiaogProps) => {
           <div className={css.inputField}>
             <p>Height</p>
             <div className={css.inputGroup}>
-              <TextField
-                type="number"
+              <InputNumber
                 value={data.height}
                 name="height"
                 placeholder="Height"

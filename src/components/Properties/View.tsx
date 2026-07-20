@@ -3,11 +3,13 @@ import type { ChangeEvent } from 'react';
 import useHistoryDebounce from '@/hooks/useHistoryDebounce';
 import useEditorStore from '@/stores/useEditorStore';
 
-import css from './View.module.scss';
+import Input from '../Inputs/Input';
+import InputNumber from '../Inputs/InputNumber';
+import InputColor from '../Inputs/InputColor';
 import LayerOrder from './components/LayerOrder';
 import Typography from './components/Typography';
 import Section from './components/Section';
-import TextField from '../TextField';
+import css from './View.module.scss';
 
 // TODO: bringToFront, bringForward, sendToBack, sendBackward multiselect support
 
@@ -43,7 +45,7 @@ const Properties = () => {
       <h3>Properties</h3>
       <div className={css.content}>
         <Section>
-          <TextField
+          <Input
             className="full"
             value={name}
             name="name"
@@ -61,23 +63,21 @@ const Properties = () => {
 
         <Section title="Position">
           <p>X</p>
-          <TextField type="number" value={x} name="x" onChange={handleChange} />
+          <InputNumber value={x} name="x" onChange={handleChange} />
           <p>Y</p>
-          <TextField type="number" value={y} name="y" onChange={handleChange} />
+          <InputNumber value={y} name="y" onChange={handleChange} />
         </Section>
 
         <Section title="Size">
           <p>W</p>
-          <TextField
-            type="number"
+          <InputNumber
             value={width}
             name="width"
             min={1}
             onChange={handleChange}
           />
           <p>H</p>
-          <TextField
-            type="number"
+          <InputNumber
             value={height}
             name="height"
             min={1}
@@ -86,8 +86,7 @@ const Properties = () => {
         </Section>
         <Section title="Rotation">
           <p />
-          <TextField
-            type="number"
+          <InputNumber
             value={rotation}
             name="rotation"
             onChange={handleChange}
@@ -96,23 +95,11 @@ const Properties = () => {
         </Section>
         <Section title="Fill">
           <p />
-          <input
-            type="color"
-            value={fill}
-            name="fill"
-            data-type="string"
-            onChange={handleChange}
-          />
+          <InputColor value={fill} name="fill" onChange={handleChange} />
         </Section>
         <Section title="Stroke">
           <p />
-          <input
-            type="color"
-            value={stroke === 'none' ? '#ffffff' : stroke}
-            name="stroke"
-            data-type="string"
-            onChange={handleChange}
-          />
+          <InputColor value={stroke} name="stroke" onChange={handleChange} />
         </Section>
       </div>
     </div>

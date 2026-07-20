@@ -1,4 +1,4 @@
-import TextField from '@/components/TextField';
+import InputNumber from '@/components/Inputs/InputNumber';
 import Section from '../Section';
 import type { TypographyProps } from './View.types';
 
@@ -8,7 +8,7 @@ const Typography = ({ shape, onChange }: TypographyProps) => {
   return (
     <Section title="Typography">
       <p />
-      <TextField
+      <InputNumber
         type="number"
         value={fontSize}
         name="fontSize"

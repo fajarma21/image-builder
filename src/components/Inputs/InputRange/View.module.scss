@@ -1,0 +1,42 @@
+@use '@/styles/components.scss' as components;
+
+.wrapper {
+  display: grid;
+  grid-template-columns: auto 60px;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+}
+
+.range {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  appearance: none;
+  cursor: pointer;
+  outline: none;
+  border-radius: 15px;
+  height: 2px;
+  background: var(--input-outline-hover);
+
+  &:hover,
+  &:active {
+    &::-webkit-slider-thumb {
+      @include components.sliderThumbActive;
+    }
+    &::-moz-range-thumb {
+      @include components.sliderThumbActive;
+    }
+  }
+
+  &::-webkit-slider-thumb {
+    appearance: none;
+    -webkit-appearance: none;
+    @include components.sliderThumb;
+  }
+  &::-moz-range-thumb {
+    -moz-appearance: none;
+    @include components.sliderThumb;
+  }
+}

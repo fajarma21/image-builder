@@ -1,11 +1,11 @@
 import type { ImageProps } from './View.types';
 
 const Image = ({ shape, ...actionProps }: ImageProps) => {
-  const { x, y, width, height } = shape;
+  const { x, y, width, height, imageSrc } = shape;
 
   return (
     <image
-      href={shape.imageSrc}
+      href={imageSrc}
       x={x}
       y={y}
       width={width}

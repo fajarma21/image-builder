@@ -6,7 +6,7 @@ const Typography = ({ shape, onChange }: TypographyProps) => {
   const { fontSize } = shape;
 
   return (
-    <Section title="Typography">
+    <Section inline title="Typography">
       <p />
       <InputNumber
         type="number"

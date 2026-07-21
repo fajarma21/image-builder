@@ -2,3 +2,17 @@
   color: var(--white-text);
   background-color: var(--dark-bg);
 }
+
+@mixin sliderThumb {
+  cursor: pointer;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--white-text);
+  transition: all 0.25s;
+}
+
+@mixin sliderThumbActive {
+  width: 10px;
+  height: 10px;
+}

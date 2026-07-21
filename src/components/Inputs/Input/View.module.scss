@@ -10,9 +10,15 @@
   background-color: var(--input-bg);
   transition: border-color 0.2s;
 
-  &:hover,
-  &:focus,
-  &:focus-visible {
-    border-color: #4a4f5a;
+  &:not(&:disabled) {
+    &:hover,
+    &:focus,
+    &:focus-visible {
+      border-color: var(--input-outline-hover);
+    }
+  }
+
+  &:disabled {
+    background-color: var(--input-outline);
   }
 }

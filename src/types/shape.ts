@@ -28,7 +28,9 @@ export interface Shape {
   height: number;
   rotation: number;
   fill: string;
+  fillOpacity: number;
   stroke: string;
+  strokeOpacity: number;
   text?: string;
   fontSize?: string;
   fontFamily?: string;

@@ -1,7 +1,6 @@
 @use '@/styles/components' as components;
 
 .sidebar {
-  height: calc(100vh - 50px);
   @include components.dark;
 
   & > :not(:first-child) {

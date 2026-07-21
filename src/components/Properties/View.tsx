@@ -26,7 +26,19 @@ const Properties = () => {
   const shapeData = shapesById[selectedId];
 
   if (!shapeData) return null;
-  const { name, x, y, width, height, rotation, fill, stroke, text } = shapeData;
+  const {
+    name,
+    x,
+    y,
+    width,
+    height,
+    rotation,
+    fill,
+    fillOpacity,
+    stroke,
+    strokeOpacity,
+    text,
+  } = shapeData;
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const target = e.target;
@@ -61,14 +73,14 @@ const Properties = () => {
           <Typography shape={shapeData} onChange={handleChange} />
         )}
 
-        <Section title="Position">
+        <Section inline title="Position">
           <p>X</p>
           <InputNumber value={x} name="x" onChange={handleChange} />
           <p>Y</p>
           <InputNumber value={y} name="y" onChange={handleChange} />
         </Section>
 
-        <Section title="Size">
+        <Section inline title="Size">
           <p>W</p>
           <InputNumber
             value={width}
@@ -84,7 +96,7 @@ const Properties = () => {
             onChange={handleChange}
           />
         </Section>
-        <Section title="Rotation">
+        <Section inline title="Rotation">
           <p />
           <InputNumber
             value={rotation}
@@ -95,11 +107,33 @@ const Properties = () => {
         </Section>
         <Section title="Fill">
           <p />
-          <InputColor value={fill} name="fill" onChange={handleChange} />
+          <InputColor
+            colorEvent={{
+              value: fill,
+              name: 'fill',
+              onChange: handleChange,
+            }}
+            opacityEvent={{
+              value: fillOpacity,
+              name: 'fillOpacity',
+              onChange: handleChange,
+            }}
+          />
         </Section>
         <Section title="Stroke">
           <p />
-          <InputColor value={stroke} name="stroke" onChange={handleChange} />
+          <InputColor
+            colorEvent={{
+              value: stroke,
+              name: 'stroke',
+              onChange: handleChange,
+            }}
+            opacityEvent={{
+              value: strokeOpacity,
+              name: 'strokeOpacity',
+              onChange: handleChange,
+            }}
+          />
         </Section>
       </div>
     </div>

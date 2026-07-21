@@ -1,7 +1,9 @@
 import type { EllipseProps } from './View.types';
 
 const Ellipse = ({ shape, ...actionProps }: EllipseProps) => {
-  const { x, y, width, height, fill, stroke } = shape;
+  const { x, y, width, height, imageSrc, show, ...restShape } = shape;
+  void imageSrc;
+  void show;
 
   return (
     <ellipse
@@ -9,8 +11,7 @@ const Ellipse = ({ shape, ...actionProps }: EllipseProps) => {
       cy={y + height / 2}
       rx={width / 2}
       ry={height / 2}
-      fill={fill}
-      stroke={stroke}
+      {...restShape}
       {...actionProps}
     />
   );

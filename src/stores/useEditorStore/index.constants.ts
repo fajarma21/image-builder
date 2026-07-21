@@ -3,7 +3,10 @@ const DEFAULT_SHAPE = {
   x: 0,
   y: 0,
   fill: '#ffdd61',
+  fillOpacity: 1,
   rotation: 0,
+  stroke: '',
+  strokeOpacity: 1,
 };
 
 export const DEFAULT_GENERIC_SHAPE = {

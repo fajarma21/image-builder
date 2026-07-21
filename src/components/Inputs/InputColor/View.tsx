@@ -1,34 +1,51 @@
-import { type ChangeEvent, type InputHTMLAttributes } from 'react';
-
-import useInput from '@/hooks/useInput';
-
 import Input from '../Input';
-import { isValidHex, normalizeColor } from './View.helpers';
+import useInput from '@/hooks/useInput';
+import modifyEventTarget from '@/utils/modifyEventTarget';
+
+import InputRange from '../InputRange';
 import css from './View.module.scss';
+import type { InputColorProps } from './View.types';
 
-const InputColor = (props: InputHTMLAttributes<HTMLInputElement>) => {
-  const { value = '#ffffff', onChange } = props;
+const InputColor = ({ colorEvent, opacityEvent }: InputColorProps) => {
+  const { className, value, ...restColorProps } = colorEvent;
 
-  const validation = (e: ChangeEvent<HTMLInputElement>) => {
-    if (!isValidHex(e.target.value)) return;
-    return e;
-  };
-
-  const { className, type, ...restProps } = useInput({
-    inputData: { ...props, value },
-    callback: validation,
+  const opacityHandlers = useInput({
+    inputData: opacityEvent,
+    callback: (e) => {
+      const target = e.target;
+      const clonedTarget = modifyEventTarget(
+        target,
+        String(Number(target.value) / 100),
+      );
+      return { ...e, target: clonedTarget };
+    },
   });
-  void type;
 
   return (
-    <div className={css.colorPicker}>
-      <input
-        {...restProps}
-        type="color"
-        value={normalizeColor(value)}
-        onChange={onChange}
+    <div>
+      <div className={`${css.colorPicker} ${className}`}>
+        <input
+          data-color
+          type="color"
+          value={value || '#000000'}
+          {...restColorProps}
+        />
+        <Input
+          data-color-text
+          value={value}
+          {...restColorProps}
+          disabled={!value}
+        />
+      </div>
+      <InputRange
+        {...opacityHandlers}
+        className={`${css.opacityGroup} ${opacityEvent.className}`}
+        disabled={!value}
+        name={opacityEvent.name}
+        min={0}
+        max={100}
+        value={(Number(opacityEvent.value) * 100).toFixed()}
       />
-      <Input className={`${css.textColor} ${className}`} {...restProps} />
     </div>
   );
 };

@@ -10,6 +10,7 @@
   --white-text: #bdbcbc;
   --dark-gray: #37383d;
   --input-outline: #32353c;
+  --input-outline-hover: #4a4f5a;
   --input-bg: #1a1e24;
   font:
     16px system-ui,

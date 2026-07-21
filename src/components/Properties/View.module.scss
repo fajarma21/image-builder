@@ -1,4 +1,6 @@
 .properties {
+  --lh: calc(100vh - 50px);
+  height: var(--lh);
   h3 {
     text-transform: uppercase;
     color: var(--white-title);
@@ -11,5 +13,10 @@
 
 .content {
   overflow-y: auto;
+  height: calc(var(--lh) - 63px);
   padding: 0 16px;
+
+  > :last-child {
+    margin-bottom: 16px;
+  }
 }

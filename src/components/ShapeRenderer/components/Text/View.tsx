@@ -8,7 +8,9 @@ import { EDITING_TEXT } from '@/constants/interaction';
 import InputText from './components/InputText';
 
 const Text = ({ shape, ...actionProps }: TextProps) => {
-  const { id, x, y, fill, stroke, text, fontSize, fontFamily } = shape;
+  const { id, text, fontSize, imageSrc, show, ...restShape } = shape;
+  void imageSrc;
+  void show;
 
   const selectedIds = useEditorStore((state) => state.selectedIds);
   const interaction = useEditorStore((state) => state.interaction);
@@ -32,16 +34,12 @@ const Text = ({ shape, ...actionProps }: TextProps) => {
     <>
       <text
         ref={textRef}
-        x={x}
-        y={y}
         fontSize={fontSize}
-        fontFamily={fontFamily}
-        fill={fill}
-        stroke={stroke}
         paintOrder="stroke fill"
         dominantBaseline="hanging"
         xmlSpace="preserve"
         className={css.text}
+        {...restShape}
         {...actionProps}
         onDoubleClick={() => startInteraction({ type: EDITING_TEXT })}
       >

@@ -1,6 +1,7 @@
 import { type ChangeEvent, type InputHTMLAttributes } from 'react';
 
 import useInput from '@/hooks/useInput';
+import modifyEventTarget from '@/utils/modifyEventTarget';
 
 import Input from '../Input';
 import { valueChecker } from './View.helpers';
@@ -18,9 +19,7 @@ const InputNumber = (props: InputHTMLAttributes<HTMLInputElement>) => {
     const max = Number(target.max) || undefined;
     const newValue = String(valueChecker(num, min, max));
 
-    const clonedTarget = target.cloneNode(true) as HTMLInputElement;
-    clonedTarget.type = 'number';
-    clonedTarget.value = newValue;
+    const clonedTarget = modifyEventTarget(target, newValue, 'number');
 
     return { ...e, target: clonedTarget };
   };

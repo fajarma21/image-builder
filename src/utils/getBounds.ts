@@ -1,12 +1,14 @@
 import type { Shape } from '@/types/shape';
+import degToRad from './degToRad';
+import { SHAPE_ELLIPSE } from '@/constants';
 
-function rotatePoint(
+const rotatePoint = (
   x: number,
   y: number,
   cx: number,
   cy: number,
   deg: number,
-) {
+) => {
   const translatedX = x - cx;
   const translatedY = y - cy;
 
@@ -21,38 +23,76 @@ function rotatePoint(
     x: rotatedX + cx,
     y: rotatedY + cy,
   };
-}
+};
 
-const getBounds = ({ x, y, width, height, rotation }: Shape) => {
-  const cx = x + width / 2;
-  const cy = y + height / 2;
+const getCenter = ({ x, y, width, height }: Shape) => {
+  return {
+    cx: x + width / 2,
+    cy: y + height / 2,
+  };
+};
 
-  const tlX = x;
-  const tlY = y;
-  const newTL = rotatePoint(tlX, tlY, cx, cy, rotation);
+const getRectBounds = (shape: Shape) => {
+  const { x, y, width, height, rotation } = shape;
+  const { cx, cy } = getCenter(shape);
 
-  const trX = x + width;
-  const trY = y;
-  const newTR = rotatePoint(trX, trY, cx, cy, rotation);
+  const x1x3 = x;
+  const y1y2 = y;
+  const x2x4 = x + width;
+  const y3y4 = y + height;
 
-  const blX = x;
-  const blY = y + height;
-  const newBL = rotatePoint(blX, blY, cx, cy, rotation);
-
-  const brX = x + width;
-  const brY = y + height;
-  const newBR = rotatePoint(brX, brY, cx, cy, rotation);
+  const xy1 = rotatePoint(x1x3, y1y2, cx, cy, rotation);
+  const xy2 = rotatePoint(x2x4, y1y2, cx, cy, rotation);
+  const xy3 = rotatePoint(x1x3, y3y4, cx, cy, rotation);
+  const xy4 = rotatePoint(x2x4, y3y4, cx, cy, rotation);
 
   return {
-    top: Math.min(newTL.y, newTR.y, newBL.y, newBR.y),
-    bottom: Math.max(newTL.y, newTR.y, newBL.y, newBR.y),
-    left: Math.min(newTL.x, newTR.x, newBL.x, newBR.x),
-    right: Math.max(newTL.x, newTR.x, newBL.x, newBR.x),
-    width,
-    height,
+    top: Math.min(xy1.y, xy2.y, xy3.y, xy4.y),
+    bottom: Math.max(xy1.y, xy2.y, xy3.y, xy4.y),
+    left: Math.min(xy1.x, xy2.x, xy3.x, xy4.x),
+    right: Math.max(xy1.x, xy2.x, xy3.x, xy4.x),
     centerX: cx,
     centerY: cy,
+    width,
+    height,
   };
+};
+
+const getCircleBounds = (shape: Shape) => {
+  const { width, height, rotation } = shape;
+
+  const rx = width / 2;
+  const ry = height / 2;
+  const { cx, cy } = getCenter(shape);
+  const rad = degToRad(rotation);
+
+  const halfWidth = Math.sqrt(
+    Math.pow(rx * Math.cos(rad), 2) + Math.pow(ry * Math.sin(rad), 2),
+  );
+  const halfHeight = Math.sqrt(
+    Math.pow(rx * Math.sin(rad), 2) + Math.pow(ry * Math.cos(rad), 2),
+  );
+
+  return {
+    top: cy - halfHeight,
+    bottom: cy + halfHeight,
+    left: cx - halfWidth,
+    right: cx + halfWidth,
+    centerX: cx,
+    centerY: cy,
+    width,
+    height,
+  };
+};
+
+const getBounds = (shape: Shape) => {
+  switch (shape.type) {
+    case SHAPE_ELLIPSE:
+      return getCircleBounds(shape);
+
+    default:
+      return getRectBounds(shape);
+  }
 };
 
 export default getBounds;

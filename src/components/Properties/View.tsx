@@ -56,7 +56,7 @@ const Properties = () => {
     <div className={css.properties}>
       <h3>Properties</h3>
       <div className={css.content}>
-        <Section>
+        <Section title="Position">
           <Input
             className="full"
             value={name}

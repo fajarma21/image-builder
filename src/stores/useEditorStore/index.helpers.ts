@@ -1,4 +1,4 @@
-import type { Document } from './index.types';
+import type { Document } from '@/types/document';
 
 export const getCanvasBounds = ({ width, height }: Document) => {
   return {

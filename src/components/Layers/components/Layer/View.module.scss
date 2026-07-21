@@ -1,8 +1,9 @@
 .layer {
   cursor: pointer;
-  display: flex;
+  display: grid;
+  grid-template-columns: 20px auto 24px;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
   height: 36px;
   padding: 0 8px;
   border-radius: 8px;
@@ -15,13 +16,16 @@
   &[data-selected] {
     background-color: var(--dark-gray);
   }
+
+  &[data-hide] {
+    opacity: 0.5;
+  }
 }
 
 .buttonModifier {
   flex: none;
   width: 24px;
   height: 24px;
-  color: #848484;
   background-color: transparent;
 }
 
@@ -29,8 +33,4 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-
-  &[data-hide] {
-    opacity: 0.5;
-  }
 }

@@ -1,6 +1,6 @@
 import { RiCircleLine, RiSquareLine, RiText } from 'react-icons/ri';
 
-import { SHAPE_ELLIPSE, SHAPE_RECT, SHAPE_TEXT } from '@/constants';
+import { SHAPE_ELLIPSE, SHAPE_RECT, SHAPE_TEXT } from '@/constants/shape';
 
 export const ELEMENT_LIST = [
   {

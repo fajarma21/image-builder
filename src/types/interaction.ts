@@ -97,7 +97,7 @@ interface MarqueeInteraction {
   currentMouseY: number;
 }
 
-export type interaction =
+export type Interaction =
   | IdleInteraction
   | DraggingInteraction
   | ResizingInteraction

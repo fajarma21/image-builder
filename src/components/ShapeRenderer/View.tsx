@@ -5,7 +5,7 @@ import {
   SHAPE_IMAGE,
   SHAPE_RECT,
   SHAPE_TEXT,
-} from '@/constants';
+} from '@/constants/shape';
 
 import Image from './components/Image';
 import Text from './components/Text';

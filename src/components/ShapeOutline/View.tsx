@@ -5,7 +5,7 @@ import {
   SHAPE_IMAGE,
   SHAPE_RECT,
   SHAPE_TEXT,
-} from '@/constants';
+} from '@/constants/shape';
 import { COLOR_OUTLINE } from '@/constants/colors';
 import useEditorStore from '@/stores/useEditorStore';
 
@@ -34,7 +34,7 @@ const ShapeOutline = (props: ShapeOutlineProps) => {
         return (
           <text
             x={x}
-            y={y}
+            y={y - Number(fontSize) * -0.195}
             fontSize={fontSize}
             dominantBaseline="hanging"
             {...outlineProps}

@@ -1,14 +1,14 @@
 import type { Bounds, Camera } from '@/types';
 import type { EditorSnapshot, Shape, ShapeType } from '@/types/shape';
 import type { Document } from '@/types/document';
-import type { interaction, StartInteractionParams } from '@/types/interaction';
+import type { Interaction, StartInteractionParams } from '@/types/interaction';
 
 export interface EditorStore extends EditorSnapshot {
   camera: Camera;
 
   document: Document;
 
-  interaction: interaction;
+  interaction: Interaction;
 
   past: EditorSnapshot[];
   future: EditorSnapshot[];

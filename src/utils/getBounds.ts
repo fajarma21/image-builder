@@ -1,6 +1,6 @@
 import type { Shape } from '@/types/shape';
 import degToRad from './degToRad';
-import { SHAPE_ELLIPSE } from '@/constants';
+import { SHAPE_ELLIPSE } from '@/constants/shape';
 
 const rotatePoint = (
   x: number,

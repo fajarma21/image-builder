@@ -1,6 +1,6 @@
 import type { Document } from '@/types/document';
 
-export const getCanvasBounds = ({ width, height }: Document) => {
+const getCanvasBounds = ({ width, height }: Document) => {
   return {
     top: 0,
     bottom: height,
@@ -12,3 +12,5 @@ export const getCanvasBounds = ({ width, height }: Document) => {
     centerY: height / 2,
   };
 };
+
+export default getCanvasBounds;

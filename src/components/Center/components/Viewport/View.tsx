@@ -20,10 +20,7 @@ import {
 } from '@/constants/interaction';
 import useEditorStore from '@/stores/useEditorStore';
 import useKeyboardStore from '@/stores/useKeyboardStore';
-import getBounds from '@/utils/getBounds';
-import intersects from '@/utils/intersects';
 import isTextEditing from '@/utils/isTextEditing';
-import normalizeRect from '@/utils/normalizeRect';
 import radToDeg from '@/utils/radToDeg';
 import viewportToCanvas from '@/utils/viewportToCanvas';
 
@@ -44,7 +41,6 @@ const Viewport = () => {
   const spaceKey = useKeyboardStore((state) => state.spaceKey);
 
   const selectOnly = useEditorStore((state) => state.selectOnly);
-  const selectMultiple = useEditorStore((state) => state.selectMultiple);
   const toggleSelection = useEditorStore((state) => state.toggleSelection);
   const clearSelection = useEditorStore((state) => state.clearSelection);
   const selectAll = useEditorStore((state) => state.selectAll);
@@ -330,38 +326,11 @@ const Viewport = () => {
     [interaction, startInteraction, updateShape, camera, marquee],
   );
 
-  const handleMouseUp = useCallback(
-    (e: globalThis.MouseEvent) => {
-      switch (interaction.type) {
-        case MARQUEE: {
-          const marquee = normalizeRect(interaction);
-          const ids: string[] = [];
-
-          for (const shapeId of shapeIds) {
-            const shape = shapesById![shapeId];
-            const shapeBounds = getBounds(shape);
-
-            if (intersects(shapeBounds, marquee)) ids.push(shapeId);
-          }
-          selectMultiple(ids);
-
-          break;
-        }
-
-        default:
-          break;
-      }
-
-      stopInteraction(e);
-    },
-    [interaction, selectMultiple, shapeIds, shapesById, stopInteraction],
-  );
-
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('keyup', handleKeyUp);
     window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseup', handleMouseUp);
+    window.addEventListener('mouseup', stopInteraction);
 
     const svg = svgRef.current;
     if (svg) svg.addEventListener('wheel', handleZoom, { passive: false });
@@ -370,11 +339,17 @@ const Viewport = () => {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
       window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener('mouseup', stopInteraction);
 
       if (svg) svg.removeEventListener('wheel', handleZoom);
     };
-  }, [handleKeyDown, handleKeyUp, handleMouseMove, handleZoom, handleMouseUp]);
+  }, [
+    handleKeyDown,
+    handleKeyUp,
+    handleMouseMove,
+    handleZoom,
+    stopInteraction,
+  ]);
 
   return (
     <div

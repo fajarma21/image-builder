@@ -1,5 +1,6 @@
 import type { ChangeEvent } from 'react';
 
+import { SHAPE_IMAGE } from '@/constants/shape';
 import useHistoryDebounce from '@/hooks/useHistoryDebounce';
 import useEditorStore from '@/stores/useEditorStore';
 
@@ -27,6 +28,7 @@ const Properties = () => {
 
   if (!shapeData) return null;
   const {
+    type,
     name,
     x,
     y,
@@ -105,36 +107,40 @@ const Properties = () => {
           />
           <p>&deg;</p>
         </Section>
-        <Section title="Fill">
-          <p />
-          <InputColor
-            colorEvent={{
-              value: fill,
-              name: 'fill',
-              onChange: handleChange,
-            }}
-            opacityEvent={{
-              value: fillOpacity,
-              name: 'fillOpacity',
-              onChange: handleChange,
-            }}
-          />
-        </Section>
-        <Section title="Stroke">
-          <p />
-          <InputColor
-            colorEvent={{
-              value: stroke,
-              name: 'stroke',
-              onChange: handleChange,
-            }}
-            opacityEvent={{
-              value: strokeOpacity,
-              name: 'strokeOpacity',
-              onChange: handleChange,
-            }}
-          />
-        </Section>
+        {type !== SHAPE_IMAGE && (
+          <>
+            <Section title="Fill">
+              <p />
+              <InputColor
+                colorEvent={{
+                  value: fill,
+                  name: 'fill',
+                  onChange: handleChange,
+                }}
+                opacityEvent={{
+                  value: fillOpacity,
+                  name: 'fillOpacity',
+                  onChange: handleChange,
+                }}
+              />
+            </Section>
+            <Section title="Stroke">
+              <p />
+              <InputColor
+                colorEvent={{
+                  value: stroke,
+                  name: 'stroke',
+                  onChange: handleChange,
+                }}
+                opacityEvent={{
+                  value: strokeOpacity,
+                  name: 'strokeOpacity',
+                  onChange: handleChange,
+                }}
+              />
+            </Section>
+          </>
+        )}
       </div>
     </div>
   );

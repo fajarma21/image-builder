@@ -38,7 +38,6 @@ const InputText = ({ shape }: InputTextProps) => {
           fontSize: shape.fontSize,
           color: shape.fill,
           width: shape.width,
-          transform: `translateY(${-0.19 * Number(shape.fontSize)}px)`,
         }}
         onChange={handleChange}
         onBlur={handleBlur}

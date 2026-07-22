@@ -8,7 +8,7 @@ import { EDITING_TEXT } from '@/constants/interaction';
 import InputText from './components/InputText';
 
 const Text = ({ shape, ...actionProps }: TextProps) => {
-  const { id, text, fontSize, imageSrc, show, ...restShape } = shape;
+  const { id, y, text, fontSize, imageSrc, show, ...restShape } = shape;
   void imageSrc;
   void show;
 
@@ -41,6 +41,7 @@ const Text = ({ shape, ...actionProps }: TextProps) => {
         className={css.text}
         {...restShape}
         {...actionProps}
+        y={y - Number(fontSize) * -0.195}
         onDoubleClick={() => startInteraction({ type: EDITING_TEXT })}
       >
         {text}

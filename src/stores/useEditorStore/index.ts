@@ -1,28 +1,21 @@
 import { create } from 'zustand';
 
-import { SHAPE_IMAGE, SHAPE_TEXT, TARGET_SELECTION } from '@/constants';
-import {
-  DRAGGING,
-  EDITING_TEXT,
-  IDLE,
-  MARQUEE,
-  MOUSE_DOWN_EMPTY,
-  MOUSE_DOWN_SHAPE,
-  PANNING,
-  RESIZING,
-  ROTATING,
-} from '@/constants/interaction';
-import type { Shape } from '@/types/shape';
+import { TARGET_SELECTION } from '@/constants';
+import { IDLE } from '@/constants/interaction';
 import alignSelection from '@/utils/alignSelection';
-import createSnapshot from '@/utils/createSnapshot';
+import getCanvasBounds from '@/utils/getCanvasBounds';
 import distributeSelection from '@/utils/distributeSelection';
 import getSelectionBounds from '@/utils/getSelectionBounds';
 import isEmptyObject from '@/utils/isEmptyObject';
 import layerOrder from '@/utils/layerOrder';
 import pushHistory from '@/utils/pushHistory';
+import stopInteraction from '@/utils/Editor/stopInteraction';
+import addShape from '@/utils/Editor/addShape';
+import addImage from '@/utils/Editor/addImage';
+import startInteraction from '@/utils/Editor/startInteraction';
+import duplicate from '@/utils/Editor/duplicate';
+import paste from '@/utils/Editor/paste';
 
-import { DEFAULT_GENERIC_SHAPE, DEFAULT_TEXT_SHAPE } from './index.constants';
-import { getCanvasBounds } from './index.helpers';
 import type { EditorStore } from './index.types';
 
 const useEditorStore = create<EditorStore>((set) => ({
@@ -53,54 +46,15 @@ const useEditorStore = create<EditorStore>((set) => ({
   updateDocument: (document) =>
     set((state) => ({ document: { ...state.document, ...document } })),
   addShape: (shape) =>
-    set((state) => {
-      const id = Date.now().toString();
-      const len = state.shapeIds.length;
-      const defaultShape =
-        shape === SHAPE_TEXT ? DEFAULT_TEXT_SHAPE : DEFAULT_GENERIC_SHAPE;
-      const name = `${shape}${len ? ` ${len + 1}` : ''}`;
-
-      return {
-        ...pushHistory(state),
-        shapesById: {
-          ...state.shapesById,
-          [id]: {
-            id,
-            type: shape,
-            name,
-            ...defaultShape,
-          },
-        },
-        shapeIds: [...state.shapeIds, id],
-        selectedId: id,
-        selectedIds: [id],
-        selectionBounds: null,
-      };
-    }),
+    set((state) => ({
+      ...pushHistory(state),
+      ...addShape(state, shape),
+    })),
   addImage: (name, imageSrc, width, height) =>
-    set((state) => {
-      const id = Date.now().toString();
-
-      return {
-        ...pushHistory(state),
-        shapesById: {
-          ...state.shapesById,
-          [id]: {
-            id,
-            type: SHAPE_IMAGE,
-            name,
-            imageSrc,
-            ...DEFAULT_GENERIC_SHAPE,
-            width,
-            height,
-          },
-        },
-        shapeIds: [...state.shapeIds, id],
-        selectedId: id,
-        selectedIds: [id],
-        selectionBounds: null,
-      };
-    }),
+    set((state) => ({
+      ...pushHistory(state),
+      ...addImage(state, name, imageSrc, width, height),
+    })),
   selectOnly: (id) => set(() => ({ selectedIds: [id], selectionBounds: null })),
   selectMultiple: (ids) =>
     set((state) => ({
@@ -176,93 +130,12 @@ const useEditorStore = create<EditorStore>((set) => ({
         },
       },
     })),
-  startInteraction: ({
-    type,
-    mouseX = 0,
-    mouseY = 0,
-    scrollX = 0,
-    scrollY = 0,
-    shape,
-  }) =>
-    set((state) => {
-      if (type === DRAGGING || type === RESIZING || type === ROTATING) {
-        return {
-          interaction: {
-            type,
-            startMouseX: mouseX,
-            startMouseY: mouseY,
-            startShapes: state.selectedIds.map((id) => state.shapesById![id]),
-            centerX: shape ? shape.x + shape.width / 2 : 0,
-            centerY: shape ? shape.y + shape.height / 2 : 0,
-            startSnapshot: createSnapshot(state),
-          },
-        };
-      }
-      if (type === MOUSE_DOWN_EMPTY || type === MOUSE_DOWN_SHAPE) {
-        return {
-          interaction: {
-            type,
-            startMouseX: mouseX,
-            startMouseY: mouseY,
-          },
-        };
-      }
-      if (type === PANNING) {
-        return {
-          interaction: {
-            type,
-            startMouseX: mouseX,
-            startMouseY: mouseY,
-            scrollLeft: scrollX,
-            scrollTop: scrollY,
-          },
-        };
-      }
-      if (type === MARQUEE) {
-        return {
-          interaction: {
-            type,
-            startMouseX: mouseX,
-            startMouseY: mouseY,
-            currentMouseX: mouseX,
-            currentMouseY: mouseY,
-          },
-        };
-      }
-      return { interaction: { type } };
-    }),
+  startInteraction: (data) => set((state) => startInteraction(state, data)),
   stopInteraction: (e) =>
-    set((state) => {
-      if (
-        !e ||
-        state.interaction.type === IDLE ||
-        state.interaction.type === EDITING_TEXT
-      )
-        return state;
-
-      let history: ReturnType<typeof pushHistory> | null = null;
-      const startState = state.interaction;
-      if (
-        (e.clientX !== startState.startMouseX ||
-          e.clientY !== startState.startMouseY) &&
-        state.interaction.type !== MOUSE_DOWN_SHAPE &&
-        state.interaction.type !== MOUSE_DOWN_EMPTY &&
-        state.interaction.type !== PANNING &&
-        state.interaction.type !== MARQUEE
-      ) {
-        history = pushHistory({
-          ...state.interaction.startSnapshot,
-          past: state.past,
-        });
-      }
-
-      let selectionBounds = state.selectionBounds;
-      if (state.interaction.type === DRAGGING && selectionBounds) {
-        selectionBounds = getSelectionBounds(state.shapeIds, state.shapesById);
-      }
-
-      return { ...history, interaction: { type: IDLE }, selectionBounds };
-    }),
+    set((state) => ({
+      ...stopInteraction(state, e),
+      interaction: { type: IDLE },
+    })),
   pushHistory: (snapshot) =>
     set((state) => {
       return {
@@ -309,67 +182,21 @@ const useEditorStore = create<EditorStore>((set) => ({
     });
   },
   duplicate: (ids) =>
-    set((state) => {
-      const newIds = [];
-      const newShapes: Record<string, Shape> = {};
-      for (let index = 0; index < ids.length; index++) {
-        const id = ids[index];
-        const newId = String(Date.now() + index);
-        const shape = structuredClone(state.shapesById![id]);
-        newIds.push(newId);
-        newShapes[newId] = {
-          ...shape,
-          id: newId,
-          name: shape.name + ' copy',
-        };
-      }
-
-      return {
-        ...pushHistory(state),
-        shapesById: {
-          ...state.shapesById,
-          ...newShapes,
-        },
-        shapeIds: [...state.shapeIds, ...newIds],
-        selectedIds: newIds,
-        selectionBounds: getSelectionBounds(newIds, state.shapesById),
-      };
-    }),
+    set((state) => ({
+      ...pushHistory(state),
+      ...duplicate(state, ids),
+    })),
   copy: () =>
     set((state) => ({
-      ...state,
       clipboard: state.selectedIds.map((id) =>
         structuredClone(state.shapesById![id]),
       ),
     })),
   paste: () =>
-    set((state) => {
-      if (!state.clipboard.length) return state;
-
-      const newIds = [];
-      const newShapes: Record<string, Shape> = {};
-      for (let index = 0; index < state.clipboard.length; index++) {
-        const newId = String(Date.now() + index);
-        const shape = state.clipboard[index];
-        newIds.push(newId);
-        newShapes[newId] = {
-          ...shape,
-          id: newId,
-          name: shape.name + ' copy',
-        };
-      }
-
-      return {
-        ...pushHistory(state),
-        shapesById: {
-          ...state.shapesById,
-          ...newShapes,
-        },
-        shapeIds: [...state.shapeIds, ...newIds],
-        selectedIds: newIds,
-        selectionBounds: getSelectionBounds(newIds, state.shapesById),
-      };
-    }),
+    set((state) => ({
+      ...pushHistory(state),
+      ...paste(state),
+    })),
   moveLayer: (order) =>
     set((state) => ({
       ...pushHistory(state),

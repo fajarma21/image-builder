@@ -1,9 +1,9 @@
 import {
-  SHAPE_IMAGE,
+  type SHAPE_IMAGE,
   type SHAPE_ELLIPSE,
   type SHAPE_RECT,
   type SHAPE_TEXT,
-} from '@/constants';
+} from '@/constants/shape';
 
 export type SupportedSVG =
   | SVGRectElement
@@ -32,7 +32,7 @@ export interface Shape {
   stroke: string;
   strokeOpacity: number;
   text?: string;
-  fontSize?: string;
+  fontSize?: number;
   fontFamily?: string;
   imageSrc?: string;
 }

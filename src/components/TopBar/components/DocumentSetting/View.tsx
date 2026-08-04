@@ -20,7 +20,8 @@ const DocumentSetting = () => {
     <>
       <div className={css.projectData}>
         <p>
-          {document.name} - {document.width}x{document.height}px
+          {document.name || 'untitled project'} - {document.width}x
+          {document.height}px
         </p>
         <Button className={css.editButton} onClick={toggleDialog}>
           <RiArrowDownSLine />

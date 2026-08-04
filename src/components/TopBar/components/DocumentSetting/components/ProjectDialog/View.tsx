@@ -9,7 +9,7 @@ import type { Document } from '@/types/document';
 import css from './View.module.scss';
 import type { ProjectDiaogProps } from './View.types';
 
-// TODO: Grid
+// TODO: Grid setting
 
 const ProjectDialog = ({ display, onClose }: ProjectDiaogProps) => {
   const document = useEditorStore((state) => state.document);
@@ -41,6 +41,7 @@ const ProjectDialog = ({ display, onClose }: ProjectDiaogProps) => {
           <div className={css.inputField}>
             <p>Project Title</p>
             <Input
+              autoFocus
               value={data.name}
               name="name"
               placeholder="Project Title"

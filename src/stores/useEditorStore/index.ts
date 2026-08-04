@@ -20,7 +20,7 @@ import type { EditorStore } from './index.types';
 
 const useEditorStore = create<EditorStore>((set) => ({
   document: {
-    name: 'untitled project',
+    name: '',
     width: 800,
     height: 600,
     backgroundColor: 'none',

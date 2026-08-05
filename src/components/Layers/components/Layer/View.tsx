@@ -30,7 +30,7 @@ const Layer = ({ data, selected, ...restProps }: LayerProps) => {
     >
       <ItemIcon type={type} />
       <p className={css.name}>{name}</p>
-      <Button className={css.buttonModifier} onClick={toggleShow}>
+      <Button size="icon" className={css.buttonDisplay} onClick={toggleShow}>
         {show ? <RiEyeLine /> : <RiEyeCloseLine />}
       </Button>
     </li>

@@ -39,11 +39,17 @@ const UploadImage = ({ className }: UploadImageProps) => {
 
   return (
     <>
-      <Button type="button" className={className} onClick={handleClickUpload}>
+      <Button className={className} onClick={handleClickUpload}>
         <RiImageUploadLine size={48} />
         <p>Image</p>
       </Button>
-      <input hidden ref={inputRef} type="file" onChange={handleUpload} />
+      <input
+        hidden
+        ref={inputRef}
+        type="file"
+        accept="image/*"
+        onChange={handleUpload}
+      />
     </>
   );
 };

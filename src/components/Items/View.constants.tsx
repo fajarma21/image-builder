@@ -11,7 +11,7 @@ export const ELEMENT_LIST = [
   {
     icon: <RiCircleLine size={48} />,
     value: SHAPE_ELLIPSE,
-    title: 'Circle',
+    title: 'Ellipse',
   },
   {
     icon: <RiText size={48} />,

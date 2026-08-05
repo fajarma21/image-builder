@@ -1,3 +1,5 @@
+import { RiImageDownloadLine } from 'react-icons/ri';
+
 import exportToPng from '@/utils/exportToPng';
 import useEditorStore from '@/stores/useEditorStore';
 
@@ -23,11 +25,12 @@ const TopBar = () => {
       </div>
 
       <Button
-        type="button"
+        variant="accent"
         className={css.exportBtn}
         disabled={!shapeIds.length}
         onClick={handleExport}
       >
+        <RiImageDownloadLine />
         Export to PNG
       </Button>
     </div>

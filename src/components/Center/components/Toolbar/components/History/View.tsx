@@ -13,10 +13,10 @@ const History = () => {
 
   return (
     <div className={css.history}>
-      <Button disabled={!past.length} onClick={undo}>
+      <Button size="icon" disabled={!past.length} onClick={undo}>
         <RiArrowGoBackLine />
       </Button>
-      <Button disabled={!future.length} onClick={redo}>
+      <Button size="icon" disabled={!future.length} onClick={redo}>
         <RiArrowGoForwardLine />
       </Button>
     </div>

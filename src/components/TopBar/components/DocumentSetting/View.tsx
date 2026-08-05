@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { RiArrowDownSLine } from 'react-icons/ri';
+import { RiArrowRightSLine } from 'react-icons/ri';
 
 import Button from '@/components/Button';
 import useEditorStore from '@/stores/useEditorStore';
@@ -17,19 +17,17 @@ const DocumentSetting = () => {
   };
 
   return (
-    <>
-      <div className={css.projectData}>
+    <div className={css.wrapper}>
+      <Button className={css.projectData} onClick={toggleDialog}>
         <p>
           {document.name || 'untitled project'} - {document.width}x
           {document.height}px
         </p>
-        <Button className={css.editButton} onClick={toggleDialog}>
-          <RiArrowDownSLine />
-        </Button>
-      </div>
+        <RiArrowRightSLine />
+      </Button>
 
       <ProjectDialog display={displayDialog} onClose={toggleDialog} />
-    </>
+    </div>
   );
 };
 

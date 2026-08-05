@@ -20,7 +20,11 @@ const Dialog = ({
       {children}
       <div className={css.btnContainer}>
         {!!onSubmit && (
-          <Button className={css.btnModifier} onClick={onSubmit}>
+          <Button
+            variant="accent"
+            className={css.btnModifier}
+            onClick={onSubmit}
+          >
             Save
           </Button>
         )}

@@ -18,11 +18,13 @@
   }
 
   &[data-hide] {
+    cursor: not-allowed;
     opacity: 0.5;
   }
 }
 
-.buttonModifier {
+.buttonDisplay {
+  cursor: pointer;
   flex: none;
   width: 24px;
   height: 24px;

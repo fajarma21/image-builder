@@ -6,18 +6,30 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
   height: 32px;
+  padding: 0 8px;
   border-radius: 8px;
   color: var(--white-text);
   background-color: var(--dark-gray);
+  transition: all 0.25s;
 
-  &:disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
-  }
   &:focus-visible {
     outline: 2px solid var(--color-outline);
     outline-offset: 2px;
+  }
+
+  &[data-variant='accent'] {
+    color: var(--dark-text);
+    background-color: var(--color-accent);
+  }
+  &[data-size='icon'] {
+    padding: 0;
+    width: 32px;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    color: var(--disabled-text);
+    background-color: var(--disabled-bg);
   }
 }

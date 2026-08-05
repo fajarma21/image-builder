@@ -1,14 +1,15 @@
 @use '@/styles/components' as components;
 
-.projectData {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 14px;
+.wrapper {
   padding-left: 16px;
   border-left: 1px dashed var(--dark-border);
 }
 
-.editButton {
-  background-color: transparent;
+.projectData {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  border: 1px solid var(--input-border);
+  background-color: var(--input-bg);
 }

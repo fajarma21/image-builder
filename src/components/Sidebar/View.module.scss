@@ -3,6 +3,14 @@
 .sidebar {
   @include components.dark;
 
+  &:first-child {
+    border-right: 1px solid var(--dark-border);
+  }
+
+  &:last-child {
+    border-left: 1px solid var(--dark-border);
+  }
+
   & > :not(:first-child) {
     border-top: 1px solid var(--dark-border);
   }

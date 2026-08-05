@@ -18,7 +18,7 @@
   outline: none;
   border-radius: 15px;
   height: 2px;
-  background: var(--input-outline-hover);
+  background: var(--border-hover);
 
   &:hover,
   &:active {
@@ -38,5 +38,8 @@
   &::-moz-range-thumb {
     -moz-appearance: none;
     @include components.sliderThumb;
+  }
+  &:disabled {
+    cursor: not-allowed;
   }
 }

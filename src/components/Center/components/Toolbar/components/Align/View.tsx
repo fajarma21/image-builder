@@ -32,7 +32,7 @@ const Align = () => {
         {ALIGN_H_LIST.map((item) => (
           <Button
             key={item.value}
-            type="button"
+            size="icon"
             title={item.title}
             onClick={() => align(item.value, target)}
           >
@@ -45,7 +45,7 @@ const Align = () => {
         {ALIGN_V_LIST.map((item) => (
           <Button
             key={item.value}
-            type="button"
+            size="icon"
             title={item.title}
             onClick={() => align(item.value, target)}
           >
@@ -58,7 +58,7 @@ const Align = () => {
         {DISTRIBUTE_LIST.map((item) => (
           <Button
             key={item.value}
-            type="button"
+            size="icon"
             title={item.title}
             disabled={selectedIds.length <= 1}
             onClick={() => distribute(item.value, target)}

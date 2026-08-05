@@ -16,7 +16,6 @@ const Items = () => {
           {ELEMENT_LIST.map((item) => (
             <Button
               key={item.value}
-              type="button"
               className={css.itemBtn}
               onClick={() => addShape(item.value)}
             >

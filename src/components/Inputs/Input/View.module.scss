@@ -6,19 +6,25 @@
   height: 36px;
   padding: 8px;
   border-radius: 8px;
-  border: 1px solid var(--input-outline);
+  border: 1px solid var(--input-border);
   background-color: var(--input-bg);
   transition: border-color 0.2s;
+
+  &::placeholder {
+    color: var(--border-hover);
+    opacity: 0.7;
+  }
 
   &:not(&:disabled) {
     &:hover,
     &:focus,
     &:focus-visible {
-      border-color: var(--input-outline-hover);
+      border-color: var(--border-hover);
     }
   }
 
   &:disabled {
-    background-color: var(--input-outline);
+    cursor: not-allowed;
+    background-color: var(--input-border);
   }
 }

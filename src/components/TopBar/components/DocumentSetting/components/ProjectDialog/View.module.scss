@@ -7,7 +7,6 @@
 
 .inputField {
   p {
-    opacity: 0.7;
     margin: 0 0 8px 8px;
   }
 }
@@ -21,9 +20,6 @@
   grid-template-columns: 1fr 1fr;
   gap: 24px;
   margin-bottom: 16px;
-  p {
-    margin: 0;
-  }
 }
 
 .inputGroup {

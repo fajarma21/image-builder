@@ -1,7 +1,7 @@
-export const SHAPE_RECT = 'rect' as const;
-export const SHAPE_ELLIPSE = 'ellipse' as const;
-export const SHAPE_TEXT = 'text' as const;
-export const SHAPE_IMAGE = 'image' as const;
+export const SHAPE_RECT = 'Rectangle' as const;
+export const SHAPE_ELLIPSE = 'Ellipse' as const;
+export const SHAPE_TEXT = 'Text' as const;
+export const SHAPE_IMAGE = 'Image' as const;
 
 const FUNCTION_PROPS = {
   show: true,

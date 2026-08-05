@@ -1,24 +1,26 @@
 :root {
-  --dark-bg: #202427;
-  --text: #202427;
+  --dark-bg: #232a3b;
+  --color-accent: #ffca28;
   --shadow:
     rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
   --color-outline: #3b82f6;
   --color-canvas-outline: #e5e5e7;
-  --dark-border: rgb(57, 64, 70);
+  --dark-border: #383b4a;
   --white-title: #dfdfdf;
-  --white-text: #bdbcbc;
-  --dark-gray: #37383d;
-  --input-outline: #32353c;
-  --input-outline-hover: #4a4f5a;
-  --input-bg: #1a1e24;
+  --white-text: #b9bcc7;
+  --dark-text: #161b28;
+  --dark-gray: #324161;
+  --disabled-bg: #31394a;
+  --disabled-text: #686e83;
+  --border-hover: #4f5b74;
+  --input-border: var(--disabled-bg);
+  --input-bg: var(--dark-text);
   font:
     16px system-ui,
     'Segoe UI',
     Roboto,
     sans-serif;
   letter-spacing: 0.18px;
-  color: var(--text);
   background: var(--dark-bg);
   font-synthesis: none;
   text-rendering: optimizeLegibility;

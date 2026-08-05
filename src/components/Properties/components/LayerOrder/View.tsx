@@ -14,7 +14,7 @@ const LayerOrder = () => {
       {LAYER_ORDER_LIST.map((item) => (
         <Button
           key={item.value}
-          type="button"
+          size="icon"
           title={item.title}
           onClick={() => moveLayer(item.value)}
         >

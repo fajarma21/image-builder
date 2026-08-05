@@ -8,7 +8,5 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  border: 1px solid var(--dark-border);
-  border-width: 0 1px;
   @include components.dark;
 }

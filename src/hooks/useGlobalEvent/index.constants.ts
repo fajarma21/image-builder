@@ -4,3 +4,5 @@ export const ARROW_VALUES = {
   ArrowDown: { x: 0, y: 1 },
   ArrowLeft: { x: -1, y: 0 },
 };
+
+export const ADDITION_TO_NORMAL = 90;

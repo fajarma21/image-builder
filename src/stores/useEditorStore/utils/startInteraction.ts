@@ -10,7 +10,7 @@ import {
 import type { EditorStore } from '@/stores/useEditorStore/index.types';
 import type { StartInteractionParams } from '@/types/interaction';
 
-import createSnapshot from '../createSnapshot';
+import createSnapshot from '../../../utils/createSnapshot';
 
 const startInteraction = (
   state: EditorStore,

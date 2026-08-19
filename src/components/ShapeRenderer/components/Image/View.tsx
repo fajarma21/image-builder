@@ -5,6 +5,7 @@ const Image = ({ shape, ...actionProps }: ImageProps) => {
 
   return (
     <image
+      preserveAspectRatio="none"
       href={imageSrc}
       x={x}
       y={y}

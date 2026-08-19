@@ -4,6 +4,7 @@ import {
   type SHAPE_RECT,
   type SHAPE_TEXT,
 } from '@/constants/shape';
+import type { Bounds } from '.';
 
 export type SupportedSVG =
   | SVGRectElement
@@ -41,4 +42,5 @@ export interface EditorSnapshot {
   shapesById: Record<string, Shape> | null;
   shapeIds: string[];
   selectedIds: string[];
+  selectionBounds: Bounds | null;
 }

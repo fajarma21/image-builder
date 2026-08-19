@@ -1,6 +1,6 @@
 import type { EditorStore } from '@/stores/useEditorStore/index.types';
 import type { Shape } from '@/types/shape';
-import getSelectionBounds from '../getSelectionBounds';
+import getSelectionBounds from '../../../utils/getSelectionBounds';
 
 const duplicate = (state: EditorStore, ids: string[]) => {
   const { shapesById, shapeIds } = state;

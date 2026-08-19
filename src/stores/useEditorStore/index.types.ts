@@ -41,7 +41,7 @@ export interface EditorStore extends EditorSnapshot {
   undo: () => void;
   redo: () => void;
 
-  moveShape: (id: string, x: number, y: number) => void;
+  moveShapes: (ids: string[], dx: number, dy: number) => void;
 
   duplicate: (ids: string[]) => void;
   copy: () => void;

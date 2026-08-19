@@ -3,8 +3,8 @@ import { type ChangeEvent, type InputHTMLAttributes } from 'react';
 import useInput from '@/hooks/useInput';
 import modifyEventTarget from '@/utils/modifyEventTarget';
 
+import valueChecker from './utils/valueChecker';
 import Input from '../Input';
-import { valueChecker } from './View.helpers';
 
 const InputNumber = (props: InputHTMLAttributes<HTMLInputElement>) => {
   const validation = (e: ChangeEvent<HTMLInputElement>) => {

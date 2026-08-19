@@ -1,18 +1,9 @@
+import createSnapshot from '../createSnapshot';
 import type { PushHistoryParams } from './index.types';
 
-const pushHistory = ({
-  past,
-  shapesById,
-  shapeIds,
-  selectedIds,
-}: PushHistoryParams) => {
-  const snapShot = {
-    shapesById: structuredClone(shapesById),
-    shapeIds,
-    selectedIds,
-  };
+const pushHistory = ({ past, ...state }: PushHistoryParams) => {
   return {
-    past: [...past, snapShot],
+    past: [...past, createSnapshot(state)],
     future: [],
   };
 };

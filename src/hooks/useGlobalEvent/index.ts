@@ -14,10 +14,12 @@ import {
 import useEditorStore from '@/stores/useEditorStore';
 import useKeyboardStore from '@/stores/useKeyboardStore';
 import isTextEditing from '@/utils/isTextEditing';
-import radToDeg from '@/utils/radToDeg';
 import viewportToCanvas from '@/utils/viewportToCanvas';
 
 import { ARROW_VALUES } from './index.constants';
+import getResizeValue from './utils/getResizeValue';
+import getRotateValue from './utils/getRotateValue';
+import getPanValue from './utils/getPanValue';
 
 const useGlobalEvent = () => {
   const camera = useEditorStore((state) => state.camera);
@@ -32,7 +34,7 @@ const useGlobalEvent = () => {
   const updateShape = useEditorStore((state) => state.updateShape);
   const undo = useEditorStore((state) => state.undo);
   const redo = useEditorStore((state) => state.redo);
-  const moveShape = useEditorStore((state) => state.moveShape);
+  const moveShapes = useEditorStore((state) => state.moveShapes);
   const duplicate = useEditorStore((state) => state.duplicate);
   const copy = useEditorStore((state) => state.copy);
   const paste = useEditorStore((state) => state.paste);
@@ -76,8 +78,7 @@ const useGlobalEvent = () => {
           e.preventDefault();
           const multiplier = shiftKey ? 10 : 1;
           const { x, y } = ARROW_VALUES[key];
-          for (const id of selectedIds)
-            moveShape(id, x * multiplier, y * multiplier); // TODO: change to batch update
+          moveShapes(selectedIds, x * multiplier, y * multiplier);
         }
 
         // DUPLICATE
@@ -114,7 +115,7 @@ const useGlobalEvent = () => {
       copy,
       deleteSelected,
       duplicate,
-      moveShape,
+      moveShapes,
       paste,
       redo,
       selectAll,
@@ -151,6 +152,7 @@ const useGlobalEvent = () => {
           break;
         }
 
+        // TODO: change this to batch update
         case DRAGGING: {
           for (const shape of interaction.startShapes) {
             updateShape(shape.id, {
@@ -162,49 +164,24 @@ const useGlobalEvent = () => {
         }
 
         case RESIZING: {
-          const shape = interaction.startShapes[0];
-          const angle = (shape.rotation * Math.PI) / 180;
-
-          const localDx = (dx * Math.cos(angle) + dy * Math.sin(angle)) * 2;
-          const localDy = (-dx * Math.sin(angle) + dy * Math.cos(angle)) * 2;
-
-          const width = Math.max(1, shape.width + localDx);
-          const height = Math.max(1, shape.height + localDy);
-
-          updateShape(shape.id, {
-            x: interaction.centerX - width / 2,
-            y: interaction.centerY - height / 2,
-            width: width,
-            height,
-          });
+          const { id, ...resizeValue } = getResizeValue(dx, dy, interaction);
+          updateShape(id, { ...resizeValue });
           break;
         }
 
         case ROTATING: {
-          const canvasRect = canvas.getBoundingClientRect();
-          const canvasMouseX =
-            Math.max(e.clientX - canvasRect.left, 0) / camera.zoom;
-          const canvasMouseY =
-            Math.max(e.clientY - canvasRect.top, 0) / camera.zoom;
-
-          const radian = Math.atan2(
-            canvasMouseY - interaction.centerY,
-            canvasMouseX - interaction.centerX,
+          const { id, rotation } = getRotateValue(
+            e,
+            canvas,
+            camera,
+            interaction,
           );
-
-          const degrees = radToDeg(radian);
-
-          updateShape(interaction.startShapes[0].id, {
-            rotation: degrees + 90,
-          });
+          updateShape(id, { rotation });
           break;
         }
 
         case PANNING: {
-          const currentX = e.pageX - viewport.offsetLeft;
-          const currentY = e.pageY - viewport.offsetTop;
-          const walkX = currentX - interaction.startMouseX;
-          const walkY = currentY - interaction.startMouseY;
+          const { walkX, walkY } = getPanValue(e, viewport, interaction);
           viewport.scrollLeft = interaction.scrollLeft - walkX;
           viewport.scrollTop = interaction.scrollTop - walkY;
           break;

@@ -5,6 +5,7 @@ const createSnapshot = (state: EditorSnapshot) => {
     shapesById: structuredClone(state.shapesById),
     shapeIds: state.shapeIds,
     selectedIds: state.selectedIds,
+    selectionBounds: state.selectionBounds,
   };
 };
 

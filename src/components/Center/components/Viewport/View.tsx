@@ -6,7 +6,6 @@ import MarqueeRect from '@/components/MarqueeRect';
 import SelectionBox from '@/components/SelectionBox';
 import ShapeRenderer from '@/components/ShapeRenderer';
 import ShapeWrapper from '@/components/ShapeWrapper';
-import { MAX_ZOOM, MIN_ZOOM } from '@/constants';
 import {
   IDLE,
   MOUSE_DOWN_EMPTY,
@@ -17,6 +16,7 @@ import useEditorStore from '@/stores/useEditorStore';
 import useKeyboardStore from '@/stores/useKeyboardStore';
 import viewportToCanvas from '@/utils/viewportToCanvas';
 
+import getZoomData from './utils/getZoomData';
 import css from './View.module.scss';
 
 // TODO: resize and rotate multiselect support
@@ -41,8 +41,20 @@ const Viewport = () => {
   const viewportRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
 
-  const handleMouseDownCanvas = (e: MouseEvent) => {
-    if (e.target === svgRef.current && !spaceKey) {
+  const startPan = (e: MouseEvent) => {
+    if (viewportRef.current) {
+      startInteraction({
+        type: PANNING,
+        mouseX: e.pageX - viewportRef.current.offsetLeft,
+        mouseY: e.pageY - viewportRef.current.offsetTop,
+        scrollX: viewportRef.current.scrollLeft,
+        scrollY: viewportRef.current.scrollTop,
+      });
+    }
+  };
+
+  const handleClickEmpty = (e: MouseEvent) => {
+    if (svgRef.current) {
       clearSelection();
 
       const { canvasX, canvasY } = viewportToCanvas(
@@ -60,6 +72,13 @@ const Viewport = () => {
     }
   };
 
+  const handleMouseDown = (e: MouseEvent) => {
+    if (spaceKey) startPan(e);
+    else if (e.target === viewportRef.current || e.target === svgRef.current) {
+      handleClickEmpty(e);
+    }
+  };
+
   const handleMouseDownShape = (e: MouseEvent, id: string) => {
     if (spaceKey) return;
 
@@ -73,20 +92,6 @@ const Viewport = () => {
     });
   };
 
-  const handleStartPan = (e: MouseEvent) => {
-    if (spaceKey && viewportRef.current) {
-      startInteraction({
-        type: PANNING,
-        mouseX: e.pageX - viewportRef.current.offsetLeft,
-        mouseY: e.pageY - viewportRef.current.offsetTop,
-        scrollX: viewportRef.current.scrollLeft,
-        scrollY: viewportRef.current.scrollTop,
-      });
-    } else if (e.target === viewportRef.current) {
-      clearSelection();
-    }
-  };
-
   const handleZoom = useCallback(
     (e: globalThis.WheelEvent) => {
       if (e.ctrlKey || e.metaKey) {
@@ -94,20 +99,11 @@ const Viewport = () => {
 
         if (!viewportRef.current) return;
 
-        const oldZoom = camera.zoom;
-        const currentZoom = e.deltaY * -0.01;
-        const newZoom = Math.max(
-          MIN_ZOOM,
-          Math.min(oldZoom + currentZoom, MAX_ZOOM),
+        const { newZoom, docX, docY, mouseX, mouseY } = getZoomData(
+          e,
+          camera.zoom,
+          viewportRef.current,
         );
-
-        const viewportRect = viewportRef.current.getBoundingClientRect();
-
-        const mouseX = e.clientX - viewportRect.left;
-        const mouseY = e.clientY - viewportRect.top;
-
-        const docX = (viewportRef.current.scrollLeft + mouseX) / oldZoom;
-        const docY = (viewportRef.current.scrollTop + mouseY) / oldZoom;
 
         flushSync(() => {
           zooming(newZoom);
@@ -134,7 +130,7 @@ const Viewport = () => {
       id="viewport"
       ref={viewportRef}
       className={css.viewport}
-      onMouseDown={handleStartPan}
+      onMouseDown={handleMouseDown}
     >
       <div
         className={css.wrapper}
@@ -148,8 +144,10 @@ const Viewport = () => {
           viewBox={`0 0 ${document.width} ${document.height}`}
           overflow="visible"
           className={css.canvas}
-          style={{ backgroundColor: document.backgroundColor }}
-          onMouseDown={handleMouseDownCanvas}
+          style={{
+            backgroundColor: document.backgroundColor,
+            borderRadius: 4 * camera.zoom,
+          }}
         >
           {document.grid.show && <Grid />}
 

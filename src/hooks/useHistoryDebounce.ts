@@ -1,10 +1,13 @@
 import useEditorStore from '@/stores/useEditorStore';
 import { useEffect, useRef } from 'react';
 
+// TODO: change push history method for input
+
 const useHistoryDebounce = (time = 500) => {
   const shapeIds = useEditorStore((state) => state.shapeIds);
   const shapesById = useEditorStore((state) => state.shapesById);
   const selectedIds = useEditorStore((state) => state.selectedIds);
+  const selectionBounds = useEditorStore((state) => state.selectionBounds);
   const pushHistory = useEditorStore((state) => state.pushHistory);
 
   const hit = useRef(false);
@@ -28,6 +31,7 @@ const useHistoryDebounce = (time = 500) => {
       shapeIds,
       shapesById,
       selectedIds,
+      selectionBounds,
     });
 
     hit.current = true;

@@ -6,16 +6,17 @@ import alignSelection from '@/utils/alignSelection';
 import getCanvasBounds from '@/utils/getCanvasBounds';
 import distributeSelection from '@/utils/distributeSelection';
 import getSelectionBounds from '@/utils/getSelectionBounds';
-import isEmptyObject from '@/utils/isEmptyObject';
 import layerOrder from '@/utils/layerOrder';
 import pushHistory from '@/utils/pushHistory';
-import stopInteraction from '@/utils/Editor/stopInteraction';
-import addShape from '@/utils/Editor/addShape';
-import addImage from '@/utils/Editor/addImage';
-import startInteraction from '@/utils/Editor/startInteraction';
-import duplicate from '@/utils/Editor/duplicate';
-import paste from '@/utils/Editor/paste';
 
+import stopInteraction from './utils/stopInteraction';
+import addShape from './utils/addShape';
+import addImage from './utils/addImage';
+import startInteraction from './utils/startInteraction';
+import duplicate from './utils/duplicate';
+import paste from './utils/paste';
+import deleteSelected from './utils/deleteSelected';
+import moveShapes from './utils/moveShapes';
 import type { EditorStore } from './index.types';
 
 const useEditorStore = create<EditorStore>((set) => ({
@@ -84,35 +85,19 @@ const useEditorStore = create<EditorStore>((set) => ({
   clearSelection: () => set(() => ({ selectedIds: [], selectionBounds: null })),
   deleteSelected: () =>
     set((state) => {
-      let cleanShapesById = state.shapesById;
-      if (state.shapesById) {
-        cleanShapesById = { ...state.shapesById };
-        for (const id of state.selectedIds) {
-          delete cleanShapesById[id];
-        }
-      }
-
       return {
         ...pushHistory(state),
-        selectedIds: [],
-        shapeIds: state.shapeIds.filter(
-          (item) => !state.selectedIds.includes(item),
-        ),
-        shapesById: isEmptyObject(cleanShapesById) ? null : cleanShapesById,
+        ...deleteSelected(state),
         selectionBounds: null,
       };
     }),
   updateShape: (id, shape) =>
     set((state) => {
-      if (state.shapesById && state.shapesById[id])
-        return {
-          shapesById: {
-            ...state.shapesById,
-            [id]: { ...state.shapesById[id], ...shape },
-          },
-        };
       return {
-        shapesById: state.shapesById,
+        shapesById: {
+          ...state.shapesById,
+          [id]: { ...state.shapesById![id], ...shape },
+        },
       };
     }),
   updateMultipleShape: (shapes) =>
@@ -125,8 +110,8 @@ const useEditorStore = create<EditorStore>((set) => ({
         ...state.shapesById,
         [id]: {
           ...state.shapesById![id],
-          width: Math.max(state.shapesById![id].width, width),
-          height: Math.max(state.shapesById![id].height, height),
+          width,
+          height,
         },
       },
     })),
@@ -165,22 +150,19 @@ const useEditorStore = create<EditorStore>((set) => ({
         future: state.future.slice(0, -1),
       };
     }),
-  moveShape: (id, x = 0, y = 0) => {
+  moveShapes: (ids, dx, dy) =>
     set((state) => {
-      const current = state.shapesById![id];
+      const shapesById = moveShapes(state, ids, dx, dy);
+
       return {
         ...pushHistory(state),
         shapesById: {
           ...state.shapesById,
-          [id]: {
-            ...current,
-            x: current.x + x,
-            y: current.y + y,
-          },
+          ...shapesById,
         },
+        selectionBounds: getSelectionBounds(state.selectedIds, shapesById),
       };
-    });
-  },
+    }),
   duplicate: (ids) =>
     set((state) => ({
       ...pushHistory(state),

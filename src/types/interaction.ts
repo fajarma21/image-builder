@@ -45,7 +45,7 @@ interface DraggingInteraction {
   startSnapshot: EditorSnapshot;
 }
 
-interface ResizingInteraction {
+export interface ResizingInteraction {
   type: typeof RESIZING;
   startMouseX: number;
   startMouseY: number;
@@ -55,7 +55,7 @@ interface ResizingInteraction {
   startSnapshot: EditorSnapshot;
 }
 
-interface RotatingInteraction {
+export interface RotatingInteraction {
   type: typeof ROTATING;
   startMouseX: number;
   startMouseY: number;
@@ -81,7 +81,7 @@ interface EditingTextInteraction {
   type: typeof EDITING_TEXT;
 }
 
-interface PanningInteraction {
+export interface PanningInteraction {
   type: typeof PANNING;
   startMouseX: number;
   startMouseY: number;

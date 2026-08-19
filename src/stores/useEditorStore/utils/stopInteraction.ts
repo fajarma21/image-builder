@@ -10,11 +10,11 @@ import {
 import type { EditorStore } from '@/stores/useEditorStore/index.types';
 import type { Interaction } from '@/types/interaction';
 
-import getBounds from '../getBounds';
-import getSelectionBounds from '../getSelectionBounds';
-import intersects from '../intersects';
-import normalizeRect from '../normalizeRect';
-import pushHistory from '../pushHistory';
+import getBounds from '../../../utils/getBounds';
+import getSelectionBounds from '../../../utils/getSelectionBounds';
+import intersects from '../../../utils/intersects';
+import normalizeRect from '../../../utils/normalizeRect';
+import pushHistory from '../../../utils/pushHistory';
 
 const noNeedToStop = (interaction: Interaction) =>
   interaction.type === IDLE || interaction.type === EDITING_TEXT;

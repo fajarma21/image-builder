@@ -164,7 +164,12 @@ const useGlobalEvent = () => {
         }
 
         case RESIZING: {
-          const { id, ...resizeValue } = getResizeValue(dx, dy, interaction);
+          const { id, ...resizeValue } = getResizeValue(
+            dx,
+            dy,
+            interaction,
+            e.shiftKey,
+          );
           updateShape(id, { ...resizeValue });
           break;
         }

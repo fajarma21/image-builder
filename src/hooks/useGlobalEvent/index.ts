@@ -34,6 +34,7 @@ const useGlobalEvent = () => {
   const updateShape = useEditorStore((state) => state.updateShape);
   const undo = useEditorStore((state) => state.undo);
   const redo = useEditorStore((state) => state.redo);
+  const dragShapes = useEditorStore((state) => state.dragShapes);
   const moveShapes = useEditorStore((state) => state.moveShapes);
   const duplicate = useEditorStore((state) => state.duplicate);
   const copy = useEditorStore((state) => state.copy);
@@ -154,12 +155,7 @@ const useGlobalEvent = () => {
 
         // TODO: change this to batch update
         case DRAGGING: {
-          for (const shape of interaction.startShapes) {
-            updateShape(shape.id, {
-              x: shape.x + dx,
-              y: shape.y + dy,
-            });
-          }
+          dragShapes(interaction.startShapes, dx, dy);
           break;
         }
 

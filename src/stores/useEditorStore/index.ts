@@ -16,6 +16,7 @@ import startInteraction from './utils/startInteraction';
 import duplicate from './utils/duplicate';
 import paste from './utils/paste';
 import deleteSelected from './utils/deleteSelected';
+import dragShapes from './utils/dragShapes';
 import moveShapes from './utils/moveShapes';
 import type { EditorStore } from './index.types';
 
@@ -149,6 +150,11 @@ const useEditorStore = create<EditorStore>((set) => ({
         past: [...state.past, state],
         future: state.future.slice(0, -1),
       };
+    }),
+  dragShapes: (shapes, dx, dy) =>
+    set((state) => {
+      const shapesById = dragShapes(shapes, dx, dy);
+      return { shapesById: { ...state.shapesById, ...shapesById } };
     }),
   moveShapes: (ids, dx, dy) =>
     set((state) => {

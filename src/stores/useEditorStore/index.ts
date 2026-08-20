@@ -45,6 +45,7 @@ const useEditorStore = create<EditorStore>((set) => ({
   future: [],
   clipboard: [],
   selectionBounds: null,
+  snapBounds: [],
   updateDocument: (document) =>
     set((state) => ({ document: { ...state.document, ...document } })),
   addShape: (shape) =>

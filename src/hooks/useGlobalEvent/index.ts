@@ -153,7 +153,6 @@ const useGlobalEvent = () => {
           break;
         }
 
-        // TODO: change this to batch update
         case DRAGGING: {
           dragShapes(interaction.startShapes, dx, dy);
           break;
@@ -203,7 +202,7 @@ const useGlobalEvent = () => {
           break;
       }
     },
-    [interaction, startInteraction, updateShape, camera, marquee],
+    [interaction, startInteraction, updateShape, camera, marquee, dragShapes],
   );
 
   useEffect(() => {

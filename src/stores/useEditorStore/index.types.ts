@@ -14,6 +14,7 @@ export interface EditorStore extends EditorSnapshot {
   future: EditorSnapshot[];
   clipboard: Shape[];
   selectionBounds: Bounds | null;
+  snapBounds: Bounds[];
 
   updateDocument: (document: Partial<Document>) => void;
 

@@ -7,4 +7,4 @@ export const ARROW_VALUES = {
 
 export const NORMALIZE_VALUE = 90;
 
-export const ROTATION_SNAP = 90;
+export const ROTATION_SNAP = 45;

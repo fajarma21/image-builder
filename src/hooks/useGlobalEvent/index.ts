@@ -21,6 +21,7 @@ import getResizeValue from './utils/getResizeValue';
 import getRotateValue from './utils/getRotateValue';
 import getPanValue from './utils/getPanValue';
 import getDragValue from './utils/getDragValue';
+import getMouseDownValue from './utils/getMouseDownValue';
 
 const useGlobalEvent = () => {
   const camera = useEditorStore((state) => state.camera);
@@ -143,40 +144,34 @@ const useGlobalEvent = () => {
       )
         return;
 
-      const dx = (e.clientX - interaction.startMouseX) / camera.zoom;
-      const dy = (e.clientY - interaction.startMouseY) / camera.zoom;
-
       switch (interaction.type) {
         case MOUSE_DOWN_EMPTY:
         case MOUSE_DOWN_SHAPE: {
-          if (Math.abs(dx) > 3 || Math.abs(dy) > 3)
-            startInteraction({
-              type: interaction.type === MOUSE_DOWN_EMPTY ? MARQUEE : DRAGGING,
-              mouseX: interaction.startMouseX,
-              mouseY: interaction.startMouseY,
-            });
+          const mouseDownValue = getMouseDownValue(e, interaction, camera.zoom);
+
+          if (mouseDownValue) startInteraction(mouseDownValue);
           break;
         }
 
         case DRAGGING: {
-          const {
-            dx: newDx,
-            dy: newDy,
-            snapXPoint,
-            snapYPoint,
-          } = getDragValue(dx, dy, selectionBounds, snapBounds);
+          const { dx, dy, snapXPoint, snapYPoint } = getDragValue(
+            e,
+            interaction,
+            selectionBounds,
+            snapBounds,
+            camera.zoom,
+          );
 
           updateSnapLine(snapYPoint, snapXPoint);
-          dragShapes(interaction.startShapes, newDx, newDy);
+          dragShapes(interaction.startShapes, dx, dy);
           break;
         }
 
         case RESIZING: {
           const { id, ...resizeValue } = getResizeValue(
-            dx,
-            dy,
+            e,
             interaction,
-            e.shiftKey,
+            camera.zoom,
           );
           updateShape(id, { ...resizeValue });
           break;

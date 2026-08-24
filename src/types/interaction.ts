@@ -35,7 +35,7 @@ interface IdleInteraction {
   type: typeof IDLE;
 }
 
-interface DraggingInteraction {
+export interface DraggingInteraction {
   type: typeof DRAGGING;
   startMouseX: number;
   startMouseY: number;
@@ -65,13 +65,13 @@ export interface RotatingInteraction {
   startSnapshot: EditorSnapshot;
 }
 
-interface MouseDownShapeInteraction {
+export interface MouseDownShapeInteraction {
   type: typeof MOUSE_DOWN_SHAPE;
   startMouseX: number;
   startMouseY: number;
 }
 
-interface MouseDownEmptyInteraction {
+export interface MouseDownEmptyInteraction {
   type: typeof MOUSE_DOWN_EMPTY;
   startMouseX: number;
   startMouseY: number;

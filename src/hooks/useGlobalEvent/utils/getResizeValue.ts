@@ -1,11 +1,19 @@
 import type { ResizingInteraction } from '@/types/interaction';
+import getDeltaAxis from '@/utils/getDeltaAxis';
 
 const getResizeValue = (
-  dx: number,
-  dy: number,
+  e: MouseEvent,
   interaction: ResizingInteraction,
-  shiftKey: boolean,
+  zoom: number,
 ) => {
+  const { dx, dy } = getDeltaAxis(
+    interaction.startMouseX,
+    interaction.startMouseY,
+    e.clientX,
+    e.clientY,
+    zoom,
+  );
+
   const shape = interaction.startShapes[0];
   const angle = (shape.rotation * Math.PI) / 180;
 
@@ -13,13 +21,13 @@ const getResizeValue = (
   const localDy = (-dx * Math.sin(angle) + dy * Math.cos(angle)) * 2;
   const maxDiff = Math.max(localDx, localDy);
 
-  const width = Math.max(1, shape.width + (shiftKey ? localDx : maxDiff));
-  const height = Math.max(1, shape.height + (shiftKey ? localDy : maxDiff));
+  const width = Math.max(1, shape.width + (e.shiftKey ? localDx : maxDiff));
+  const height = Math.max(1, shape.height + (e.shiftKey ? localDy : maxDiff));
 
   const x = interaction.centerX - width / 2;
   const y = interaction.centerY - height / 2;
 
-  return { id: shape.id, x, y, width, height };
+  return { id: shape.id, x: Math.round(x), y: Math.round(y), width, height };
 };
 
 export default getResizeValue;

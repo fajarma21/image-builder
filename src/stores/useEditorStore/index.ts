@@ -30,7 +30,10 @@ const useEditorStore = create<EditorStore>((set) => ({
       show: false,
       horizontal: 100,
       vertical: 100,
-      snap: false,
+    },
+    snap: {
+      object: true,
+      canvas: true,
     },
   },
   camera: {

@@ -1,5 +1,7 @@
 import { SNAP_ELEMENT_H, SNAP_ELEMENT_V, SNAP_THRESHOLD } from '@/constants';
 import type { Bounds } from '@/types';
+import type { DraggingInteraction } from '@/types/interaction';
+import getDeltaAxis from '@/utils/getDeltaAxis';
 
 const getSnapPoint = (bounds: Bounds, x = 0, y = 0) => {
   const arr = x ? SNAP_ELEMENT_H : SNAP_ELEMENT_V;
@@ -72,27 +74,44 @@ const getdSnapValue = (
   dy: number,
   moveBounds: Bounds,
   targetBounds: Bounds[],
+  zoom: number,
 ) => {
   const { snapX, snapY } = getSnapBoundsDiff(dx, dy, moveBounds, targetBounds);
 
   return {
-    snapX: Math.abs(snapX.delta) < SNAP_THRESHOLD ? snapX : null,
-    snapY: Math.abs(snapY.delta) < SNAP_THRESHOLD ? snapY : null,
+    snapX: Math.abs(snapX.delta) < SNAP_THRESHOLD / zoom ? snapX : null,
+    snapY: Math.abs(snapY.delta) < SNAP_THRESHOLD / zoom ? snapY : null,
   };
 };
 
 const getDragValue = (
-  dx: number,
-  dy: number,
+  e: MouseEvent,
+  interaction: DraggingInteraction,
   moveBouonds: Bounds | null,
   targetBounds: Bounds[],
+  zoom: number,
 ) => {
+  const { dx, dy } = getDeltaAxis(
+    interaction.startMouseX,
+    interaction.startMouseY,
+    e.clientX,
+    e.clientY,
+    zoom,
+  );
+
   let newDx = dx;
   let newDy = dy;
   let snapXPoint = null;
   let snapYPoint = null;
+
   if (targetBounds.length && moveBouonds) {
-    const { snapX, snapY } = getdSnapValue(dx, dy, moveBouonds, targetBounds);
+    const { snapX, snapY } = getdSnapValue(
+      dx,
+      dy,
+      moveBouonds,
+      targetBounds,
+      zoom,
+    );
 
     if (snapX) {
       newDx = dx + snapX.delta;

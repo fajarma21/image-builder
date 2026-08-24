@@ -14,7 +14,7 @@ const SnapLines = ({ horizontal, vertical }: SnapLinesProps) => {
 
   return (
     <g data-export="exclude">
-      {horizontal && (
+      {typeof horizontal === 'number' && (
         <line
           x1={-document.width * 5}
           y1={horizontal}
@@ -23,7 +23,7 @@ const SnapLines = ({ horizontal, vertical }: SnapLinesProps) => {
           {...strokeBase}
         />
       )}
-      {vertical && (
+      {typeof vertical === 'number' && (
         <line
           x1={vertical}
           y1={-document.height * 5}

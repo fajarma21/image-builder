@@ -7,7 +7,10 @@ export interface Document {
     show: boolean;
     horizontal: number;
     vertical: number;
-    snap: boolean;
+  };
+  snap: {
+    object: boolean;
+    canvas: boolean;
   };
 }
 

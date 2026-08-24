@@ -118,6 +118,7 @@ const useGlobalEvent = () => {
       }
     },
     [
+      selectedIds,
       clearSelection,
       copy,
       deleteSelected,
@@ -126,7 +127,6 @@ const useGlobalEvent = () => {
       paste,
       redo,
       selectAll,
-      selectedIds,
       toggleSpace,
       undo,
     ],

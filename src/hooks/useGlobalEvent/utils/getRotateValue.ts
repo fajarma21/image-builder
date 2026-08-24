@@ -3,7 +3,20 @@ import type { RotatingInteraction } from '@/types/interaction';
 import viewportToCanvas from '@/utils/viewportToCanvas';
 import type { Camera } from '@/types';
 
-import { ADDITION_TO_NORMAL } from '../index.constants';
+import { NORMALIZE_VALUE, ROTATION_SNAP } from '../index.constants';
+
+const getSnapRotation = (initRotation: number, rotation: number) => {
+  const dr = rotation - initRotation;
+  const snapModulus = dr % ROTATION_SNAP;
+
+  if (snapModulus > (ROTATION_SNAP * 3) / 4) {
+    return rotation - snapModulus + ROTATION_SNAP;
+  } else if (snapModulus < ROTATION_SNAP / 4) {
+    return rotation - snapModulus;
+  }
+
+  return rotation;
+};
 
 const getRotateValue = (
   e: MouseEvent,
@@ -24,10 +37,18 @@ const getRotateValue = (
   );
 
   const degrees = radToDeg(radian);
+  let rotation = degrees + NORMALIZE_VALUE;
+
+  if (rotation < 0) rotation = 360 + rotation;
+
+  if (e.shiftKey) {
+    const initRotation = interaction.startShapes[0].rotation;
+    rotation = getSnapRotation(initRotation, rotation);
+  }
 
   return {
     id: interaction.startShapes[0].id,
-    rotation: degrees + ADDITION_TO_NORMAL,
+    rotation,
   };
 };
 

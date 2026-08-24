@@ -5,4 +5,6 @@ export const ARROW_VALUES = {
   ArrowLeft: { x: -1, y: 0 },
 };
 
-export const ADDITION_TO_NORMAL = 90;
+export const NORMALIZE_VALUE = 90;
+
+export const ROTATION_SNAP = 90;

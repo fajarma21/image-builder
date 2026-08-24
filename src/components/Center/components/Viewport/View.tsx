@@ -155,9 +155,9 @@ const Viewport = () => {
         >
           {document.grid.show && <Grid />}
 
-          {selectionBounds && interaction.type === IDLE && (
-            <SelectionBox {...selectionBounds} />
-          )}
+          {selectionBounds &&
+            interaction.type === IDLE &&
+            selectedIds.length > 1 && <SelectionBox {...selectionBounds} />}
 
           {shapesById && (
             <>

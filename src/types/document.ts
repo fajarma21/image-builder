@@ -10,3 +10,8 @@ export interface Document {
     snap: boolean;
   };
 }
+
+export interface SnapLine {
+  h: number | null;
+  v: number | null;
+}

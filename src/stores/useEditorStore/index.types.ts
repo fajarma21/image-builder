@@ -1,6 +1,6 @@
-import type { Bounds, Camera } from '@/types';
+import type { Camera } from '@/types';
 import type { EditorSnapshot, Shape, ShapeType } from '@/types/shape';
-import type { Document } from '@/types/document';
+import type { Document, SnapLine } from '@/types/document';
 import type { Interaction, StartInteractionParams } from '@/types/interaction';
 
 export interface EditorStore extends EditorSnapshot {
@@ -13,8 +13,7 @@ export interface EditorStore extends EditorSnapshot {
   past: EditorSnapshot[];
   future: EditorSnapshot[];
   clipboard: Shape[];
-  selectionBounds: Bounds | null;
-  snapBounds: Bounds[];
+  snapLine: SnapLine | null;
 
   updateDocument: (document: Partial<Document>) => void;
 
@@ -57,4 +56,6 @@ export interface EditorStore extends EditorSnapshot {
 
   align: (alignment: string, target: string) => void;
   distribute: (distribution: string, target: string) => void;
+
+  updateSnapLine: (h: number | null, v: number | null) => void;
 }

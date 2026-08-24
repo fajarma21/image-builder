@@ -35,7 +35,7 @@ const getSelectionBounds = (
   ids: string[],
   shapesById: Record<string, Shape> | null,
 ) => {
-  if (!shapesById || ids.length <= 1) return null;
+  if (!shapesById) return null;
 
   let tempSelectionBounds: Bounds | null = null;
 

@@ -20,11 +20,14 @@ import { ARROW_VALUES } from './index.constants';
 import getResizeValue from './utils/getResizeValue';
 import getRotateValue from './utils/getRotateValue';
 import getPanValue from './utils/getPanValue';
+import getDragValue from './utils/getDragValue';
 
 const useGlobalEvent = () => {
   const camera = useEditorStore((state) => state.camera);
   const selectedIds = useEditorStore((state) => state.selectedIds);
   const interaction = useEditorStore((state) => state.interaction);
+  const selectionBounds = useEditorStore((state) => state.selectionBounds);
+  const snapBounds = useEditorStore((state) => state.snapBounds);
 
   const clearSelection = useEditorStore((state) => state.clearSelection);
   const selectAll = useEditorStore((state) => state.selectAll);
@@ -40,6 +43,8 @@ const useGlobalEvent = () => {
   const copy = useEditorStore((state) => state.copy);
   const paste = useEditorStore((state) => state.paste);
   const marquee = useEditorStore((state) => state.marquee);
+  const updateSnapLine = useEditorStore((state) => state.updateSnapLine);
+
   const toggleSpace = useKeyboardStore((state) => state.toggleSpace);
 
   const handleKeyUp = useCallback(
@@ -154,7 +159,15 @@ const useGlobalEvent = () => {
         }
 
         case DRAGGING: {
-          dragShapes(interaction.startShapes, dx, dy);
+          const {
+            dx: newDx,
+            dy: newDy,
+            snapXPoint,
+            snapYPoint,
+          } = getDragValue(dx, dy, selectionBounds, snapBounds);
+
+          updateSnapLine(snapYPoint, snapXPoint);
+          dragShapes(interaction.startShapes, newDx, newDy);
           break;
         }
 
@@ -202,7 +215,17 @@ const useGlobalEvent = () => {
           break;
       }
     },
-    [interaction, startInteraction, updateShape, camera, marquee, dragShapes],
+    [
+      camera,
+      interaction,
+      selectionBounds,
+      snapBounds,
+      dragShapes,
+      marquee,
+      startInteraction,
+      updateShape,
+      updateSnapLine,
+    ],
   );
 
   useEffect(() => {

@@ -18,3 +18,8 @@ export const ORDER_TO_FRONT = 'BRING_TO_FRONT';
 export const ORDER_FORWARD = 'BRING_FORWARD';
 export const ORDER_TO_BACK = 'SEND_TO_BACK';
 export const ORDER_BACKWARD = 'SEND_BACKWARD';
+
+export const SNAP_ELEMENT_H = ['left', 'centerX', 'right'] as const;
+export const SNAP_ELEMENT_V = ['top', 'centerY', 'bottom'] as const;
+
+export const SNAP_THRESHOLD = 10;

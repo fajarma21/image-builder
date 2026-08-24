@@ -26,7 +26,7 @@ const duplicate = (state: EditorStore, ids: string[]) => {
     },
     shapeIds: [...shapeIds, ...newIds],
     selectedIds: newIds,
-    selectionBounds: getSelectionBounds(newIds, shapesById),
+    selectionBounds: getSelectionBounds(newIds, newShapes),
   };
 };
 

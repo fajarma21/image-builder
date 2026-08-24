@@ -46,19 +46,38 @@ const useEditorStore = create<EditorStore>((set) => ({
   clipboard: [],
   selectionBounds: null,
   snapBounds: [],
+  snapLine: null,
   updateDocument: (document) =>
     set((state) => ({ document: { ...state.document, ...document } })),
   addShape: (shape) =>
-    set((state) => ({
-      ...pushHistory(state),
-      ...addShape(state, shape),
-    })),
+    set((state) => {
+      const newShape = addShape(state, shape);
+      return {
+        ...pushHistory(state),
+        ...newShape,
+        selectionBounds: getSelectionBounds(
+          newShape!.selectedIds,
+          newShape!.shapesById,
+        ),
+      };
+    }),
   addImage: (name, imageSrc, width, height) =>
+    set((state) => {
+      const newImage = addImage(state, name, imageSrc, width, height);
+      return {
+        ...pushHistory(state),
+        ...newImage,
+        selectionBounds: getSelectionBounds(
+          newImage!.selectedIds,
+          newImage!.shapesById,
+        ),
+      };
+    }),
+  selectOnly: (id) =>
     set((state) => ({
-      ...pushHistory(state),
-      ...addImage(state, name, imageSrc, width, height),
+      selectedIds: [id],
+      selectionBounds: getSelectionBounds([id], state.shapesById),
     })),
-  selectOnly: (id) => set(() => ({ selectedIds: [id], selectionBounds: null })),
   selectMultiple: (ids) =>
     set((state) => ({
       selectedIds: ids,
@@ -244,6 +263,10 @@ const useEditorStore = create<EditorStore>((set) => ({
         selectionBounds: getSelectionBounds(state.selectedIds, shapesById),
       };
     }),
+  updateSnapLine: (h, v) =>
+    set(() => ({
+      snapLine: h === null && v === null ? null : { h, v },
+    })),
 }));
 
 export default useEditorStore;

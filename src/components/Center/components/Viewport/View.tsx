@@ -7,6 +7,7 @@ import SelectionBox from '@/components/SelectionBox';
 import ShapeRenderer from '@/components/ShapeRenderer';
 import ShapeWrapper from '@/components/ShapeWrapper';
 import {
+  DRAGGING,
   IDLE,
   MOUSE_DOWN_EMPTY,
   MOUSE_DOWN_SHAPE,
@@ -18,6 +19,7 @@ import viewportToCanvas from '@/utils/viewportToCanvas';
 
 import getZoomData from './utils/getZoomData';
 import css from './View.module.scss';
+import SnapLines from '@/components/SnapLines';
 
 // TODO: resize and rotate multiselect support
 // TODO: apply viewporttocanvas helper for all coordinates
@@ -30,6 +32,8 @@ const Viewport = () => {
   const selectedIds = useEditorStore((state) => state.selectedIds);
   const interaction = useEditorStore((state) => state.interaction);
   const selectionBounds = useEditorStore((state) => state.selectionBounds);
+  const snapLine = useEditorStore((state) => state.snapLine);
+
   const spaceKey = useKeyboardStore((state) => state.spaceKey);
 
   const selectOnly = useEditorStore((state) => state.selectOnly);
@@ -151,6 +155,10 @@ const Viewport = () => {
         >
           {document.grid.show && <Grid />}
 
+          {selectionBounds && interaction.type === IDLE && (
+            <SelectionBox {...selectionBounds} />
+          )}
+
           {shapesById && (
             <>
               {shapeIds.map((id) => {
@@ -171,8 +179,8 @@ const Viewport = () => {
             </>
           )}
 
-          {selectionBounds && interaction.type === IDLE && (
-            <SelectionBox {...selectionBounds} />
+          {interaction.type === DRAGGING && snapLine && (
+            <SnapLines horizontal={snapLine.h} vertical={snapLine.v} />
           )}
 
           <MarqueeRect />

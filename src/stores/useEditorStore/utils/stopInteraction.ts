@@ -6,6 +6,8 @@ import {
   MOUSE_DOWN_EMPTY,
   MOUSE_DOWN_SHAPE,
   PANNING,
+  RESIZING,
+  ROTATING,
 } from '@/constants/interaction';
 import type { EditorStore } from '@/stores/useEditorStore/index.types';
 import type { Interaction } from '@/types/interaction';
@@ -29,7 +31,9 @@ const postInteraction = (state: EditorStore) => {
   const { interaction, selectionBounds } = state;
 
   switch (interaction.type) {
-    case DRAGGING: {
+    case DRAGGING:
+    case ROTATING:
+    case RESIZING: {
       if (selectionBounds) {
         return {
           selectionBounds: getSelectionBounds(

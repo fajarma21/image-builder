@@ -8,9 +8,9 @@ import {
   ROTATING,
 } from '@/constants/interaction';
 import type { EditorStore } from '@/stores/useEditorStore/index.types';
+import getSnapBounds from '@/utils/getSnapBounds';
+import createSnapshot from '@/utils/createSnapshot';
 import type { StartInteractionParams } from '@/types/interaction';
-
-import createSnapshot from '../../../utils/createSnapshot';
 
 const startInteraction = (
   state: EditorStore,
@@ -40,7 +40,6 @@ const startInteraction = (
       };
 
     case MOUSE_DOWN_EMPTY:
-    case MOUSE_DOWN_SHAPE:
       return {
         interaction: {
           type,
@@ -49,6 +48,20 @@ const startInteraction = (
         },
       };
 
+    case MOUSE_DOWN_SHAPE: {
+      return {
+        snapBounds: getSnapBounds(
+          state.shapeIds,
+          state.selectedIds,
+          state.shapesById!,
+        ),
+        interaction: {
+          type,
+          startMouseX: mouseX,
+          startMouseY: mouseY,
+        },
+      };
+    }
     case PANNING:
       return {
         interaction: {

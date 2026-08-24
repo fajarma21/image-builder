@@ -43,4 +43,5 @@ export interface EditorSnapshot {
   shapeIds: string[];
   selectedIds: string[];
   selectionBounds: Bounds | null;
+  snapBounds: Bounds[];
 }

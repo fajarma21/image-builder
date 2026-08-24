@@ -16,7 +16,6 @@ const addItem = (state: EditorStore, newShape: Shape) => {
       },
     },
     shapeIds: [...shapeIds, id],
-    selectedId: id,
     selectedIds: [id],
     selectionBounds: null,
   };

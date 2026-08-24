@@ -6,6 +6,7 @@ const createSnapshot = (state: EditorSnapshot) => {
     shapeIds: state.shapeIds,
     selectedIds: state.selectedIds,
     selectionBounds: state.selectionBounds,
+    snapBounds: state.snapBounds,
   };
 };
 

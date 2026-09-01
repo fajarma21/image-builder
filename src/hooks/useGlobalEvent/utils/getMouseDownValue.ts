@@ -10,19 +10,14 @@ const getMouseDownValue = (
   interaction: MouseDownEmptyInteraction | MouseDownShapeInteraction,
   zoom: number,
 ) => {
-  const { dx, dy } = getDeltaAxis(
-    interaction.startMouseX,
-    interaction.startMouseY,
-    e.clientX,
-    e.clientY,
-    zoom,
-  );
+  const currentMouse = { x: e.clientX, y: e.clientY };
+  const { dx, dy } = getDeltaAxis(interaction.startMouse, currentMouse, zoom);
 
   if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
     return {
       type: interaction.type === MOUSE_DOWN_EMPTY ? MARQUEE : DRAGGING,
-      mouseX: interaction.startMouseX,
-      mouseY: interaction.startMouseY,
+      mouseX: interaction.startMouse.x,
+      mouseY: interaction.startMouse.y,
     };
   }
 };

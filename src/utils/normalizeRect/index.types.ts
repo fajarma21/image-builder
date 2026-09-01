@@ -1,6 +1,6 @@
+import type { Point } from '@/types';
+
 export interface NormalizeRectParams {
-  startMouseX: number;
-  startMouseY: number;
-  currentMouseX: number;
-  currentMouseY: number;
+  startMouse: Point;
+  currentMouse: Point;
 }

@@ -1,17 +1,12 @@
 import type { NormalizeRectParams } from './index.types';
 
-const normalizeRect = ({
-  startMouseX,
-  startMouseY,
-  currentMouseX,
-  currentMouseY,
-}: NormalizeRectParams) => {
-  const top = Math.min(startMouseY, currentMouseY);
-  const bottom = Math.max(startMouseY, currentMouseY);
-  const left = Math.min(startMouseX, currentMouseX);
-  const right = Math.max(startMouseX, currentMouseX);
-  const width = Math.abs(currentMouseX - startMouseX);
-  const height = Math.abs(currentMouseY - startMouseY);
+const normalizeRect = ({ startMouse, currentMouse }: NormalizeRectParams) => {
+  const top = Math.min(startMouse.y, currentMouse.y);
+  const bottom = Math.max(startMouse.y, currentMouse.y);
+  const left = Math.min(startMouse.x, currentMouse.x);
+  const right = Math.max(startMouse.x, currentMouse.x);
+  const width = Math.abs(currentMouse.x - startMouse.x);
+  const height = Math.abs(currentMouse.y - startMouse.y);
   return {
     top,
     bottom,

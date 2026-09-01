@@ -7,8 +7,8 @@ const getPanValue = (
 ) => {
   const currentX = e.pageX - viewport.offsetLeft;
   const currentY = e.pageY - viewport.offsetTop;
-  const walkX = currentX - interaction.startMouseX;
-  const walkY = currentY - interaction.startMouseY;
+  const walkX = currentX - interaction.startMouse.x;
+  const walkY = currentY - interaction.startMouse.x;
 
   return { walkX, walkY };
 };

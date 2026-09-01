@@ -91,13 +91,8 @@ const getDragValue = (
   targetBounds: Bounds[],
   zoom: number,
 ) => {
-  const { dx, dy } = getDeltaAxis(
-    interaction.startMouseX,
-    interaction.startMouseY,
-    e.clientX,
-    e.clientY,
-    zoom,
-  );
+  const currentMouse = { x: e.clientX, y: e.clientY };
+  const { dx, dy } = getDeltaAxis(interaction.startMouse, currentMouse, zoom);
 
   let newDx = dx;
   let newDy = dy;

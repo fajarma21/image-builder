@@ -30,11 +30,15 @@ const startInteraction = (
       return {
         interaction: {
           type,
-          startMouseX: mouseX,
-          startMouseY: mouseY,
+          startMouse: {
+            x: mouseX,
+            y: mouseY,
+          },
           startShapes: state.selectedIds.map((id) => state.shapesById![id]),
-          centerX: shape ? shape.x + shape.width / 2 : 0,
-          centerY: shape ? shape.y + shape.height / 2 : 0,
+          center: {
+            x: shape ? shape.x + shape.width / 2 : 0,
+            y: shape ? shape.y + shape.height / 2 : 0,
+          },
           startSnapshot: createSnapshot(state),
         },
       };
@@ -43,8 +47,10 @@ const startInteraction = (
       return {
         interaction: {
           type,
-          startMouseX: mouseX,
-          startMouseY: mouseY,
+          startMouse: {
+            x: mouseX,
+            y: mouseY,
+          },
         },
       };
 
@@ -53,8 +59,10 @@ const startInteraction = (
         snapBounds: getAllSnapBounds(state),
         interaction: {
           type,
-          startMouseX: mouseX,
-          startMouseY: mouseY,
+          startMouse: {
+            x: mouseX,
+            y: mouseY,
+          },
         },
       };
     }
@@ -62,8 +70,10 @@ const startInteraction = (
       return {
         interaction: {
           type,
-          startMouseX: mouseX,
-          startMouseY: mouseY,
+          startMouse: {
+            x: mouseX,
+            y: mouseY,
+          },
           scrollLeft: scrollX,
           scrollTop: scrollY,
         },
@@ -73,10 +83,14 @@ const startInteraction = (
       return {
         interaction: {
           type,
-          startMouseX: mouseX,
-          startMouseY: mouseY,
-          currentMouseX: mouseX,
-          currentMouseY: mouseY,
+          startMouse: {
+            x: mouseX,
+            y: mouseY,
+          },
+          currentMouse: {
+            x: mouseX,
+            y: mouseY,
+          },
         },
       };
 

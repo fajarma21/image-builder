@@ -32,8 +32,8 @@ const getRotateValue = (
   );
 
   const radian = Math.atan2(
-    canvasY - interaction.centerY,
-    canvasX - interaction.centerX,
+    canvasY - interaction.center.y,
+    canvasX - interaction.center.x,
   );
 
   const degrees = radToDeg(radian);

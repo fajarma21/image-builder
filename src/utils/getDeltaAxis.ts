@@ -1,13 +1,9 @@
-const getDeltaAxis = (
-  startMouseX: number,
-  startMouseY: number,
-  liveMouseX: number,
-  liveMouseY: number,
-  zoom: number,
-) => {
+import type { Point } from '@/types';
+
+const getDeltaAxis = (startMouse: Point, currentMouse: Point, zoom: number) => {
   return {
-    dx: Math.round((liveMouseX - startMouseX) / zoom),
-    dy: Math.round((liveMouseY - startMouseY) / zoom),
+    dx: Math.round((currentMouse.x - startMouse.x) / zoom),
+    dy: Math.round((currentMouse.y - startMouse.y) / zoom),
   };
 };
 

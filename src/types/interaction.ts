@@ -10,6 +10,7 @@ import type {
   ROTATING,
 } from '@/constants/interaction';
 import type { EditorSnapshot, Shape } from './shape';
+import type { Point } from '.';
 
 type AllInteractionTypes =
   | typeof IDLE
@@ -37,44 +38,36 @@ interface IdleInteraction {
 
 export interface DraggingInteraction {
   type: typeof DRAGGING;
-  startMouseX: number;
-  startMouseY: number;
+  startMouse: Point;
   startShapes: Shape[];
-  centerX: number;
-  centerY: number;
+  center: Point;
   startSnapshot: EditorSnapshot;
 }
 
 export interface ResizingInteraction {
   type: typeof RESIZING;
-  startMouseX: number;
-  startMouseY: number;
+  startMouse: Point;
   startShapes: Shape[];
-  centerX: number;
-  centerY: number;
+  center: Point;
   startSnapshot: EditorSnapshot;
 }
 
 export interface RotatingInteraction {
   type: typeof ROTATING;
-  startMouseX: number;
-  startMouseY: number;
+  startMouse: Point;
   startShapes: Shape[];
-  centerX: number;
-  centerY: number;
+  center: Point;
   startSnapshot: EditorSnapshot;
 }
 
 export interface MouseDownShapeInteraction {
   type: typeof MOUSE_DOWN_SHAPE;
-  startMouseX: number;
-  startMouseY: number;
+  startMouse: Point;
 }
 
 export interface MouseDownEmptyInteraction {
   type: typeof MOUSE_DOWN_EMPTY;
-  startMouseX: number;
-  startMouseY: number;
+  startMouse: Point;
 }
 
 interface EditingTextInteraction {
@@ -83,18 +76,15 @@ interface EditingTextInteraction {
 
 export interface PanningInteraction {
   type: typeof PANNING;
-  startMouseX: number;
-  startMouseY: number;
+  startMouse: Point;
   scrollLeft: number;
   scrollTop: number;
 }
 
 interface MarqueeInteraction {
   type: typeof MARQUEE;
-  startMouseX: number;
-  startMouseY: number;
-  currentMouseX: number;
-  currentMouseY: number;
+  startMouse: Point;
+  currentMouse: Point;
 }
 
 export type Interaction =

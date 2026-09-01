@@ -25,3 +25,8 @@ export interface Bounds {
   centerX: number;
   centerY: number;
 }
+
+export interface Point {
+  x: number;
+  y: number;
+}

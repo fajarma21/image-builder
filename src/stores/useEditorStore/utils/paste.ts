@@ -26,7 +26,7 @@ const paste = (state: EditorStore) => {
     },
     shapeIds: [...shapeIds, ...newIds],
     selectedIds: newIds,
-    selectionBounds: getSelectionBounds(newIds, state.shapesById),
+    selectionBounds: getSelectionBounds(newIds, newShapes),
   };
 };
 

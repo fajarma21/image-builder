@@ -224,8 +224,10 @@ const useEditorStore = create<EditorStore>((set) => ({
     set((state) => ({
       interaction: {
         ...state.interaction,
-        currentMouseX: newX,
-        currentMouseY: newY,
+        currentMouse: {
+          x: newX,
+          y: newY,
+        },
       },
     })),
   align: (alignment, target) =>

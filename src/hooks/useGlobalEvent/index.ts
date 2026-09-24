@@ -170,8 +170,9 @@ const useGlobalEvent = () => {
         case RESIZING: {
           const { id, ...resizeValue } = getResizeValue(
             e,
+            canvas,
+            camera,
             interaction,
-            camera.zoom,
           );
           updateShape(id, { ...resizeValue });
           break;

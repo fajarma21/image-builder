@@ -49,6 +49,7 @@ export interface ResizingInteraction {
   startMouse: Point;
   startShapes: Shape[];
   center: Point;
+  anchor: Point;
   startSnapshot: EditorSnapshot;
 }
 

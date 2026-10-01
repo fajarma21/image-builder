@@ -21,26 +21,7 @@ const Properties = () => {
 
   const [handlePushHistory] = useHistoryDebounce();
 
-  if (!shapesById || !selectedIds.length || selectedIds.length > 1) return null;
-
   const selectedId = selectedIds[0];
-  const shapeData = shapesById[selectedId];
-
-  if (!shapeData) return null;
-  const {
-    type,
-    name,
-    x,
-    y,
-    width,
-    height,
-    rotation,
-    fill,
-    fillOpacity,
-    stroke,
-    strokeOpacity,
-    text,
-  } = shapeData;
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const target = e.target;
@@ -54,9 +35,28 @@ const Properties = () => {
     updateShape(selectedId, { [name]: value });
   };
 
-  return (
-    <div className={css.properties}>
-      <h3>Properties</h3>
+  const content = () => {
+    if (!shapesById || selectedIds.length > 1) return null;
+
+    const shapeData = shapesById[selectedId];
+    if (!shapeData) return null;
+
+    const {
+      type,
+      name,
+      x,
+      y,
+      width,
+      height,
+      rotation,
+      fill,
+      fillOpacity,
+      stroke,
+      strokeOpacity,
+      text,
+    } = shapeData;
+
+    return (
       <div className={css.content}>
         <Section title={type}>
           <Input
@@ -142,6 +142,13 @@ const Properties = () => {
           </>
         )}
       </div>
+    );
+  };
+
+  return (
+    <div className={css.properties}>
+      <h3>Properties</h3>
+      {content()}
     </div>
   );
 };

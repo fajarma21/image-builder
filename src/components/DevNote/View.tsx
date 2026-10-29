@@ -9,7 +9,7 @@ const DevNote = () => {
         <b>Under development</b>
         <p>This project is still in progress.</p>
         <a href="" target="_blank">
-          check github repo <RiExternalLinkLine />
+          check our github <RiExternalLinkLine />
         </a>
       </div>
     </div>

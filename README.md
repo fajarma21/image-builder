@@ -1,73 +1,93 @@
-# React + TypeScript + Vite
+# Image Builder
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Features
 
-Currently, two official plugins are available:
+- Elements
+  - [x] Rectangle
+  - [x] Ellipse
+  - [x] Text
+    - [x] Double click edit
+  - [x] Image
+    - [ ] Crop
+  - [ ] Line
+  - [ ] Polygon/Star
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Viewport interaction
+  - [x] Zoom
+    - [x] Wheel (+ ctrl/cmd)
+    - [x] Button control
+    - [ ] Pointer change
+  - [x] Pan
+    - [x] Viewport drag (+ space)
+    - [ ] Pointer change
+  - [x] Undo/redo
+  - [x] Align
+  - [x] Distribute
+  - [x] Marquee selection
+  - [ ] Context Menu
 
-## React Compiler
+- Element interaction
+  - [x] Selection
+    - [x] Multiple select/deselect (+ shift)
+      - [ ] Multiple drag
+      - [ ] Multiple resize
+      - [ ] Multiple rotate
+      - [x] Multiple copy/paste
+      - [x] Multiple Duplicate
+  - [x] Delete
+  - [x] Drag
+  - [x] Resize
+    - [x] Free form resize (+ shift)
+    - [ ] All corners and sides handle
+  - [x] Rotate
+    - [x] Snap every 45 degree
+    - [ ] All corners handle
+    - [ ] Movable rotate center
+  - [x] Copy/paste
+  - [x] Duplicate
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Properties
+  - [x] Typography
+    - [x] Font size
+    - [ ] Text align
+    - [ ] Text style (bold, italic, underlined, etc.)
+    - [ ] Font family
+  - [x] Layer name
+  - [x] Layer order
+  - [x] Position
+  - [x] Size
+  - [x] Rotation
+  - [ ] Border radius
+  - [x] Fill
+    - [ ] Gradient
+  - [x] Stroke
+    - [ ] Width
+    - [ ] Styles
+    - [ ] Gradient
+  - [ ] Drag to change number props
 
-## Expanding the ESLint configuration
+- Layer
+  - [x] Info
+    - [ ] Double click rename
+  - [x] Visibility toggle
+  - [ ] Lock/unlock
+  - [ ] Drag to change order
+  - [ ] Grouping
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- Project
+  - [x] Snap
+    - [x] To object
+    - [x] To document
+    - [ ] To grid
+    - [ ] Setting
+  - [ ] Grid
+    - [ ] Setting
+  - [x] Export
+    - [x] PNG
+    - [ ] JPEG
+    - [ ] SVG
+  - [ ] Save/Load
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- Template File
+  - [ ] Text
+  - [ ] Image

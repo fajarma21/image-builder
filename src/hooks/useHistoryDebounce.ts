@@ -8,6 +8,7 @@ const useHistoryDebounce = (time = 500) => {
   const shapesById = useEditorStore((state) => state.shapesById);
   const selectedIds = useEditorStore((state) => state.selectedIds);
   const selectionBounds = useEditorStore((state) => state.selectionBounds);
+  const snapBounds = useEditorStore((state) => state.snapBounds);
   const pushHistory = useEditorStore((state) => state.pushHistory);
 
   const hit = useRef(false);
@@ -32,6 +33,7 @@ const useHistoryDebounce = (time = 500) => {
       shapesById,
       selectedIds,
       selectionBounds,
+      snapBounds,
     });
 
     hit.current = true;

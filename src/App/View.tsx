@@ -8,6 +8,7 @@ import Sidebar from '@/components/Sidebar';
 import Items from '@/components/Items';
 import Layers from '@/components/Layers';
 import Properties from '@/components/Properties';
+import DevNote from '@/components/DevNote';
 
 function App() {
   const interaction = useEditorStore((state) => state.interaction);
@@ -25,6 +26,7 @@ function App() {
         <Center />
         <Sidebar>
           <Properties />
+          <DevNote />
         </Sidebar>
       </div>
     </div>
